@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TONY BOY ARCHIVE — Official Merch Drop 001</title>
+    <meta name="description" content="Merchandise ufficiale Tony Boy. T-Shirt esclusiva 280 GSM Heavyweight French Terry Cotton con fit boxy oversize e serigrafia gommata alta densità." />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@600;700;800;900&display=swap" rel="stylesheet" />
+    
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <!-- Preloader con contatore percentuale -->
+    <div id="preloader" class="preloader">
+      <div class="preloader-content">
+        <div class="preloader-logo">TONY BOY</div>
+        <div class="preloader-sub">ARCHIVE DROP 001 // 3D ASSETS LOADING</div>
+        <div class="progress-bar-container">
+          <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <div id="progress-text" class="progress-text">0%</div>
+      </div>
+    </div>
+
+    <!-- Canvas 3D Three.js a tutto schermo fisso -->
+    <div id="canvas-wrapper">
+      <canvas id="webgl"></canvas>
+    </div>
+
+    <!-- Header Glassmorphism -->
+    <header class="glass-header">
+      <div class="header-inner">
+        <a href="#hero" class="brand-logo">
+          <span class="logo-text">TONY BOY</span>
+          <span class="logo-sub">ARCHIVE</span>
+        </a>
+
+        <div class="drop-status-badge">
+          <span class="pulse-dot"></span>
+          <span class="status-label">DROP 001 ACTIVE // PEZZI LIMITATI</span>
+        </div>
+
+        <nav class="nav-links">
+          <a href="#hero" class="nav-link">Capo</a>
+          <a href="#details" class="nav-link">Specifiche</a>
+          <a href="#buy" class="nav-link">Acquista</a>
+          <a href="#lookbook" class="nav-link">Lookbook</a>
+          <a href="#faq" class="nav-link">FAQ</a>
+        </nav>
+
+        <div class="header-actions">
+          <!-- Ambient Audio Sound Toggle -->
+          <button id="audio-toggle" class="audio-btn" title="Attiva/Disattiva Audio Atmosfera" aria-label="Audio atmosfera">
+            <span class="audio-bars">
+              <span class="bar bar-1"></span>
+              <span class="bar bar-2"></span>
+              <span class="bar bar-3"></span>
+            </span>
+            <span id="audio-label" class="audio-label">VIBE</span>
+          </button>
+
+          <a href="#buy" class="cart-btn" aria-label="Carrello">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+              <path d="M3 6h18"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <span id="cart-counter" class="cart-badge">0</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content">
+      <!-- 1. Hero Section -->
+      <section id="hero" class="section hero-section">
+        <div class="hero-container">
+          <div class="edition-pill">
+            <span class="pill-sparkle">✦</span>
+            <span>LIMITED EDITION ARCHIVE PIECE // 300 PCS WORLDWIDE</span>
+          </div>
+
+          <h1 class="hero-title">
+            <span class="title-line">TONY BOY</span>
+            <span class="title-sub">HEAVYWEIGHT BOX TEE</span>
+          </h1>
+
+          <p class="hero-description">
+            La silhouette definitiva per l'inverno. 280 GSM French Terry Cotton, spalle scese e stampa serigrafica ad alta precisione fronte/retro.
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="#buy" class="btn btn-primary shimmer-effect">
+              <span>ORDINA ORA — €45</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </a>
+            <a href="#details" class="btn btn-secondary">
+              <span>ESPLORA SCHEDA</span>
+            </a>
+          </div>
+
+          <!-- Floating 3D Control Bar -->
+          <div class="model-control-panel">
+            <div class="control-group">
+              <span class="control-label">PROSPETTIVA 3D:</span>
+              <div class="view-buttons">
+                <button class="view-btn active" data-view="front">FRONTE</button>
+                <button class="view-btn" data-view="back">RETRO</button>
+                <button class="view-btn" data-view="detail">DETTAGLIO</button>
+                <button id="spin-toggle" class="view-btn" data-view="spin">360° SPIN</button>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <span class="control-label">COLORE:</span>
+              <div class="color-swatches">
+                <button class="color-swatch active" data-color="#111113" data-name="Noir Shadow" title="Noir Shadow"></button>
+                <button class="color-swatch" data-color="#2c2d33" data-name="Washed Charcoal" title="Washed Charcoal"></button>
+                <button class="color-swatch" data-color="#d4d4d8" data-name="Chalk Bone" title="Chalk Bone"></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="scroll-cue">
+            <div class="mouse-icon">
+              <span class="mouse-wheel"></span>
+            </div>
+            <span class="scroll-text">SCORRI PER ISPEZIONARE IL CAPO</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Marquee Ribbon -->
+      <div class="marquee-wrapper">
+        <div class="marquee-track">
+          <span>TONY BOY ARCHIVE DROP 001</span>
+          <span class="star">★</span>
+          <span>100% ORGANIC HEAVYWEIGHT COTTON 280 GSM</span>
+          <span class="star">★</span>
+          <span>BOXY OVERSIZE FIT</span>
+          <span class="star">★</span>
+          <span>HIGH-DENSITY SCREENPRINT</span>
+          <span class="star">★</span>
+          <span>EXCLUSIVE STREETWEAR CUT</span>
+          <span class="star">★</span>
+          <span>SPEDIZIONE TRACCIATA 24/48H</span>
+          <span class="star">★</span>
+          <!-- Duplicate for seamless loop -->
+          <span>TONY BOY ARCHIVE DROP 001</span>
+          <span class="star">★</span>
+          <span>100% ORGANIC HEAVYWEIGHT COTTON 280 GSM</span>
+          <span class="star">★</span>
+          <span>BOXY OVERSIZE FIT</span>
+          <span class="star">★</span>
+          <span>HIGH-DENSITY SCREENPRINT</span>
+          <span class="star">★</span>
+          <span>EXCLUSIVE STREETWEAR CUT</span>
+          <span class="star">★</span>
+          <span>SPEDIZIONE TRACCIATA 24/48H</span>
+          <span class="star">★</span>
+        </div>
+      </div>
+
+      <!-- 2. Product Specs Section -->
+      <section id="details" class="section specs-section">
+        <div class="section-container">
+          <div class="section-badge">ARCHIVE SPECIFICATIONS</div>
+          <h2 class="section-title">COSTRUZIONE & QUALITÀ PREMIUM</h2>
+          <p class="section-subtitle">
+            Ogni capo dell'archivio Tony Boy è sviluppato partendo da zero: dal taglio del tessuto alla consistenza della grammatura.
+          </p>
+
+          <div class="specs-grid">
+            <div class="spec-card">
+              <div class="spec-number">01</div>
+              <div class="spec-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              </div>
+              <h3 class="spec-title">280 GSM French Terry</h3>
+              <p class="spec-desc">
+                Cotone pettinato ad altissima densità. Struttura pesante e caduta rigida che mantiene la forma lavaggio dopo lavaggio.
+              </p>
+              <div class="spec-tag">100% COTONE NATURALE</div>
+            </div>
+
+            <div class="spec-card">
+              <div class="spec-number">02</div>
+              <div class="spec-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                </svg>
+              </div>
+              <h3 class="spec-title">Boxy Oversize Fit</h3>
+              <p class="spec-desc">
+                Spalle ribassate e busto squadrato. Taglio moderno streetwear ispirato alla scena rap underground internazionale.
+              </p>
+              <div class="spec-tag">CUSTOM PATTERN</div>
+            </div>
+
+            <div class="spec-card">
+              <div class="spec-number">03</div>
+              <div class="spec-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                </svg>
+              </div>
+              <h3 class="spec-title">Serigrafia High-Density</h3>
+              <p class="spec-desc">
+                Inchiostri plastisol a rilievo serigrafati a mano. Dettagli grafici tattili, spessi e resistenti a screpolature.
+              </p>
+              <div class="spec-tag">STAMPA FRONTE/RETRO</div>
+            </div>
+
+            <div class="spec-card">
+              <div class="spec-number">04</div>
+              <div class="spec-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="m9 12 2 2 4-4"/>
+                </svg>
+              </div>
+              <h3 class="spec-title">Etichetta Jacquard Numerata</h3>
+              <p class="spec-desc">
+                Targhetta tessuta sull'orlo inferiore con certificato di autenticità e codice seriale del drop esclusivo.
+              </p>
+              <div class="spec-tag">OFFICIAL MERCH PASS</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Checkout / Buy Box Section -->
+      <section id="buy" class="section checkout-section">
+        <div class="buy-section-container">
+          <div class="buy-card-modern">
+            <div class="buy-header">
+              <div class="edition-flag">DROP 001 // TIRATURA LIMITATA</div>
+              <div class="stock-indicator">
+                <span class="stock-pulse"></span>
+                <span>Solo 38 rimaste in magazzino</span>
+              </div>
+            </div>
+
+            <h2 class="buy-title">TONY BOY OFFICIAL OVERSIZED TEE</h2>
+            
+            <div class="buy-pricing">
+              <span class="price-current">€ 45,00</span>
+              <span class="price-old">€ 55,00</span>
+              <span class="price-badge">RISPARMI IL 18%</span>
+            </div>
+            
+            <div class="klarna-notice">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span>Oppure 3 rate da <strong>€ 15,00</strong> a tasso zero con <strong>Klarna</strong> / <strong>PayPal</strong></span>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Color selection display -->
+            <div class="buy-option-group">
+              <div class="option-header">
+                <span class="option-title">Colore Selezionato:</span>
+                <span id="selected-color-name" class="option-selection">Noir Shadow</span>
+              </div>
+            </div>
+
+            <!-- Size Selector Pills -->
+            <div class="buy-option-group">
+              <div class="option-header">
+                <span class="option-title">Seleziona Taglia:</span>
+                <button type="button" id="open-size-guide" class="size-guide-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  Guida alle Taglie
+                </button>
+              </div>
+              <div class="size-pills">
+                <button class="size-pill" data-size="S" data-variant="VARIANTE_ID_S">
+                  <span class="pill-size">S</span>
+                  <span class="pill-note">Disponibile</span>
+                </button>
+                <button class="size-pill active" data-size="M" data-variant="VARIANTE_ID_M">
+                  <span class="pill-size">M</span>
+                  <span class="pill-note">Popolare</span>
+                </button>
+                <button class="size-pill" data-size="L" data-variant="VARIANTE_ID_L">
+                  <span class="pill-size">L</span>
+                  <span class="pill-note">Ultime 5</span>
+                </button>
+                <button class="size-pill" data-size="XL" data-variant="VARIANTE_ID_XL">
+                  <span class="pill-size">XL</span>
+                  <span class="pill-note">Disponibile</span>
+                </button>
+                <button class="size-pill" data-size="XXL" data-variant="VARIANTE_ID_XXL">
+                  <span class="pill-size">XXL</span>
+                  <span class="pill-note">Pochi pezzi</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Quantity Selector -->
+            <div class="buy-option-group">
+              <span class="option-title">Quantità:</span>
+              <div class="quantity-stepper">
+                <button id="qty-minus" class="qty-btn" aria-label="Diminuisci">−</button>
+                <span id="qty-value" class="qty-num">1</span>
+                <button id="qty-plus" class="qty-btn" aria-label="Aumenta">+</button>
+              </div>
+            </div>
+
+            <!-- Buy Action Buttons -->
+            <div class="buy-actions">
+              <button id="buy-btn" class="btn btn-purchase shimmer-effect">
+                <span class="btn-purchase-content">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+                    <path d="M3 6h18"/>
+                    <path d="M16 10a4 4 0 0 1-8 0"/>
+                  </svg>
+                  <span>AGGIUNGI AL CARRELLO</span>
+                </span>
+                <span class="btn-purchase-sub">CHECKOUT ISTANTANEO SICURO</span>
+              </button>
+            </div>
+
+            <!-- Trust Features List -->
+            <div class="trust-features">
+              <div class="trust-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><rect width="6" height="6" x="14" y="12" rx="1"/><path d="M18 18h4a1 1 0 0 0 1-1v-5l-4-4h-1"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+                <span>Spedizione Rapida 24/48h tracciata GLS / DHL</span>
+              </div>
+              <div class="trust-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Pagamento crittografato SSL 256-bit (Shopify / Stripe)</span>
+              </div>
+              <div class="trust-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span>Reso garantito entro 14 giorni dalla consegna</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Colonna Destra: Box Guida & Anteprima 3D -->
+          <div class="buy-model-guide">
+            <div class="model-guide-badge">3D LIVE ROTATION & FIT</div>
+            <h3 class="model-guide-title">ISPEZIONA IL CAPO A 360°</h3>
+            <p class="model-guide-sub">Ruota la t-shirt con il mouse o il touch screen per verificare proporzioni e vestibilità prima del checkout.</p>
+            <div class="model-guide-features">
+              <div class="guide-feature">
+                <span class="guide-dot"></span>
+                <span>Prospettiva 3D interattiva a 360°</span>
+              </div>
+              <div class="guide-feature">
+                <span class="guide-dot"></span>
+                <span>Cambio colore in tempo reale con i selettori</span>
+              </div>
+              <div class="guide-feature">
+                <span class="guide-dot"></span>
+                <span>Dettagli serigrafia gommata fronte e retro</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Lookbook Moodboard Section -->
+      <section id="lookbook" class="section lookbook-section">
+        <div class="section-container">
+          <div class="section-badge">EDITORIAL ARCHIVE</div>
+          <h2 class="section-title">STREETWEAR LOOKBOOK</h2>
+          <p class="section-subtitle">Visual and lifestyle moodboard del Drop 001</p>
+
+          <div class="lookbook-gallery">
+            <div class="lookbook-item item-large">
+              <img src="./images/lookbook-1.jpg" alt="Tony Boy Oversize Boxy Fit" class="lookbook-img" />
+              <div class="lookbook-card-inner">
+                <div class="lookbook-badge">FIT OVERSIZE</div>
+                <div class="lookbook-caption">
+                  <h3>BOXY STREET SILHOUETTE</h3>
+                  <p>Spalla cascante e lunghezza tagliata al millimetro per stratificare con felpe e giacche bomber.</p>
+                </div>
+              </div>
+            </div>
+            <div class="lookbook-item item-medium">
+              <img src="./images/lookbook-2.jpg" alt="Heavy 280 GSM Cotton Texture" class="lookbook-img" />
+              <div class="lookbook-card-inner">
+                <div class="lookbook-badge">TEXTILE</div>
+                <div class="lookbook-caption">
+                  <h3>HEAVY 280 GSM</h3>
+                  <p>Caduta pesante e tessuto compatto a costine.</p>
+                </div>
+              </div>
+            </div>
+            <div class="lookbook-item item-small">
+              <img src="./images/lookbook-3.jpg" alt="Tony Boy Graphic Print" class="lookbook-img" />
+              <div class="lookbook-card-inner">
+                <div class="lookbook-badge">PRINT DETAILS</div>
+                <div class="lookbook-caption">
+                  <h3>TONY BOY GRAPHICS</h3>
+                  <p>Serigrafia gommata a rilievo sul retro.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. FAQ Section -->
+      <section id="faq" class="section faq-section">
+        <div class="section-container faq-container">
+          <div class="section-badge">ASSISTENZA CLIENTI</div>
+          <h2 class="section-title">DOMANDE FREQUENTI</h2>
+          <p class="section-subtitle">Tutto quello che c'è da sapere sul drop e sulle spedizioni.</p>
+
+          <div class="faq-accordion">
+            <div class="faq-item active">
+              <button class="faq-question">
+                <span>Come calza la maglietta?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>La t-shirt ha un taglio <strong>boxy oversize</strong>. Ti consigliamo di prendere la tua taglia abituale per l'effetto oversize autentico streetwear. Se preferisci un fit più regolare e aderente, scegli una taglia in meno.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Quali sono i tempi e i costi di spedizione?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>Gli ordini vengono elaborati in 24 ore lavorative. La spedizione espressa tracciata impiega <strong>24/48 ore</strong> in tutta Italia. Riceverai via SMS ed email il link di tracciamento del corriere (GLS / DHL).</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Come prendersi cura della serigrafia?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>Consigliamo di lavare il capo a rovescio a <strong>massimo 30°C</strong> con centrifuga delicata. Non candeggiare e stirare sempre al rovescio per preservare la lucentezza della stampa serigrafica nel tempo.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Posso effettuare un cambio o un reso?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>Certamente. Hai a disposizione <strong>14 giorni</strong> dalla ricezione dell'ordine per richiedere un cambio taglia o il rimborso completo, purché il capo sia integro con la confezione e i cartellini originali.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Newsletter / VIP Drop Section -->
+      <section class="newsletter-section">
+        <div class="newsletter-card">
+          <div class="edition-flag">VIP LIST // DROP ACCESS</div>
+          <h2 class="newsletter-title">NON PERDERE IL PROSSIMO DROP</h2>
+          <p class="newsletter-desc">Iscriviti per ricevere l'accesso prioritario 15 minuti prima del rilascio pubblico dei nuovi capi Tony Boy Archive.</p>
+          
+          <form id="newsletter-form" class="newsletter-form">
+            <input type="email" id="newsletter-email" placeholder="Inserisci la tua migliore email..." required />
+            <button type="submit" class="btn btn-primary">ACCESSO VIP</button>
+          </form>
+          <div id="newsletter-success" class="newsletter-success">✓ Registrato con successo! Ti invieremo il codice segreto prima del drop.</div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-col brand-col">
+          <div class="brand-logo">
+            <span class="logo-text">TONY BOY</span>
+            <span class="logo-sub">ARCHIVE // DROP 001</span>
+          </div>
+          <p class="footer-bio">Official merchandise shop. Prodotti esclusivi realizzati in tiratura limitata con materiali di alta manifattura.</p>
+          <div class="social-links">
+            <a href="https://open.spotify.com" target="_blank" rel="noopener" class="social-link" title="Spotify">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424a.627.627 0 0 1-.861.208c-2.357-1.44-5.323-1.766-8.818-.968a.625.625 0 1 1-.278-1.219c3.824-.873 7.098-.504 9.75 1.118a.628.628 0 0 1 .207.861zm1.225-2.723a.784.784 0 0 1-1.078.261c-2.697-1.658-6.809-2.138-9.998-1.17a.785.785 0 1 1-.453-1.503c3.642-1.106 8.188-.574 11.268 1.334a.784.784 0 0 1 .261 1.078zm.105-2.836C14.693 8.94 9.387 8.764 6.3 9.7a.94.94 0 1 1-.548-1.8c3.551-1.078 9.429-.87 13.167 1.35a.94.94 0 0 1-.998 1.615z"/></svg>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener" class="social-link" title="Instagram">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
+            <a href="https://youtube.com" target="_blank" rel="noopener" class="social-link" title="YouTube">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><polygon points="10 15 15 12 10 9"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-heading">Navigazione</h4>
+          <ul class="footer-list">
+            <li><a href="#hero">T-Shirt 3D</a></li>
+            <li><a href="#details">Specifiche Tessuto</a></li>
+            <li><a href="#buy">Guida all'acquisto</a></li>
+            <li><a href="#lookbook">Lookbook Galleria</a></li>
+            <li><a href="#faq">FAQ e Resi</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-heading">Sicurezza & Pagamenti</h4>
+          <div class="payment-badges">
+            <span class="pay-pill">Apple Pay</span>
+            <span class="pay-pill">Google Pay</span>
+            <span class="pay-pill">Klarna 3x</span>
+            <span class="pay-pill">Visa / Mastercard</span>
+            <span class="pay-pill">PayPal</span>
+          </div>
+          <p class="footer-secure-note">Transazioni protette e crittografate SSL 256-bit.</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 TONY BOY OFFICIAL STORE. Tutti i diritti riservati.</p>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <span>•</span>
+          <a href="#">Termini del Servizio</a>
+          <span>•</span>
+          <a href="#">Spedizioni</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Modale Guida alle Taglie (Size Guide) -->
+    <div id="size-modal" class="modal-overlay" aria-hidden="true">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <h3 class="modal-title">GUIDA ALLE TAGLIE — BOXY TEE</h3>
+            <p class="modal-sub">Misure in centimetri (cm) prese a capo steso in piano.</p>
+          </div>
+          <button id="close-modal" class="modal-close-btn" aria-label="Chiudi finestra">✕</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Taglia</th>
+                <th>Larghezza Petto (A)</th>
+                <th>Lunghezza Totale (B)</th>
+                <th>Larghezza Spalle (C)</th>
+                <th>Fit Consigliato</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>S</strong></td>
+                <td>58 cm</td>
+                <td>71 cm</td>
+                <td>54 cm</td>
+                <td>165 - 175 cm (Oversize)</td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>M</strong></td>
+                <td>61 cm</td>
+                <td>73 cm</td>
+                <td>56 cm</td>
+                <td>175 - 182 cm (Oversize)</td>
+              </tr>
+              <tr>
+                <td><strong>L</strong></td>
+                <td>64 cm</td>
+                <td>75 cm</td>
+                <td>58 cm</td>
+                <td>182 - 188 cm (Oversize)</td>
+              </tr>
+              <tr>
+                <td><strong>XL</strong></td>
+                <td>67 cm</td>
+                <td>77 cm</td>
+                <td>60 cm</td>
+                <td>188 - 195 cm (Oversize)</td>
+              </tr>
+              <tr>
+                <td><strong>XXL</strong></td>
+                <td>70 cm</td>
+                <td>79 cm</td>
+                <td>62 cm</td>
+                <td>Oltre 195 cm / Ultra Baggy</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="modal-tip">
+          <span class="tip-icon">💡</span>
+          <p><strong>Consiglio di stile:</strong> Il capo è già tagliato oversize. Se cerchi il tipico fit streetwear boxy con spalla cascante, seleziona la tua taglia standard.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast" role="alert" aria-live="assertive">
+      <div class="toast-icon">✓</div>
+      <div class="toast-message" id="toast-message">Articolo aggiunto al carrello!</div>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
