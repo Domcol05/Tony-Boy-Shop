@@ -44,13 +44,17 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
 const canvas = document.querySelector('#webgl');
 const scene = new THREE.Scene();
 
+const isInitialSmallMobile = window.innerWidth <= 480;
+const isInitialMobile = window.innerWidth <= 768;
+
 const camera = new THREE.PerspectiveCamera(
   42,
   window.innerWidth / window.innerHeight,
   0.1,
   1000
 );
-camera.position.set(0, 0, 4.8);
+// Adjust initial camera Z on mobile so sleeves and garment aren't cropped in portrait
+camera.position.set(0, 0, isInitialSmallMobile ? 5.8 : (isInitialMobile ? 5.2 : 4.8));
 
 const renderer = new THREE.WebGLRenderer({
   canvas,
@@ -61,36 +65,37 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.4;
+renderer.toneMappingExposure = 1.35;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-// Studio Lighting Setup
-const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
+// Studio Lighting Setup — Going Hard 2 Album Palette
+// (Deep atmospheric noir ambient + cool ice-cyan keylight + fiery crimson backlight)
+const ambientLight = new THREE.AmbientLight(0x280d16, 1.3);
 scene.add(ambientLight);
 
-// Key Light (Main soft white light from top-right)
-const keyLight = new THREE.DirectionalLight(0xffffff, 2.4);
-keyLight.position.set(4, 5, 4);
+// Key Light (Cool Electric Ice-Cyan hitting the front contours, just like on Tony Boy's tee in the cover)
+const keyLight = new THREE.DirectionalLight(0x7dd3fc, 3.4);
+keyLight.position.set(3, 3.5, 4.5);
 scene.add(keyLight);
 
-// Fill Light (Soft cool fill from left)
-const fillLight = new THREE.DirectionalLight(0x88aaff, 1.2);
-fillLight.position.set(-4, 2, 3);
+// Fill Light (Soft cool cyan fill from left)
+const fillLight = new THREE.DirectionalLight(0x38bdf8, 1.4);
+fillLight.position.set(-4, 1.5, 3);
 scene.add(fillLight);
 
-// Cool Rim/Backlight 1 (Highlights fabric edge contours on the left)
-const rimLightCool = new THREE.DirectionalLight(0x38bdf8, 2.8);
-rimLightCool.position.set(-4, 3, -4);
-scene.add(rimLightCool);
+// Back Rim Light (Iconic blood-crimson backlight aura from the album backdrop)
+const rimLightCrimson = new THREE.DirectionalLight(0xff1744, 4.8);
+rimLightCrimson.position.set(0, 3, -4);
+scene.add(rimLightCrimson);
 
-// Warm Rim/Backlight 2 (Highlights fabric edge contours on the right)
-const rimLightWarm = new THREE.DirectionalLight(0xffedd5, 2.2);
-rimLightWarm.position.set(4, -2, -3);
-scene.add(rimLightWarm);
+// Secondary Warm Rose / Fire Rim on the right
+const rimLightRose = new THREE.DirectionalLight(0xf43f5e, 2.4);
+rimLightRose.position.set(4, -1.5, -2.5);
+scene.add(rimLightRose);
 
-// Subtle Top Down Spotlight
-const topLight = new THREE.SpotLight(0xffffff, 2.0, 10, Math.PI / 4, 0.4);
-topLight.position.set(0, 6, 0);
+// Top Overhead Crimson Accent
+const topLight = new THREE.SpotLight(0xff3355, 2.4, 15, Math.PI / 4, 0.4);
+topLight.position.set(0, 6, 1);
 scene.add(topLight);
 
 /* ==========================================================================
@@ -184,54 +189,104 @@ loader.load(
 );
 
 /* ==========================================================================
-   4. GSAP SCROLL ANIMATIONS
+   4. RESPONSIVE GSAP SCROLL ANIMATIONS (DESKTOP & MOBILE)
    ========================================================================== */
-const scrollTimeline = gsap.timeline({
-  scrollTrigger: {
-    trigger: '#main-content',
-    start: 'top top',
-    end: 'bottom bottom',
-    scrub: 1.2,
-  },
+const mm = gsap.matchMedia();
+
+// Desktop (> 768px): drifts right & left beside text cards
+mm.add("(min-width: 769px)", () => {
+  const desktopTL = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#main-content',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 1.2,
+    },
+  });
+
+  desktopTL
+    // Specs Section: drifts right & rotates
+    .to(modelPivot.position, { x: 0.9, y: -0.15, z: 0.2, ease: 'power1.inOut' }, 0.2)
+    .to(modelPivot.rotation, { y: Math.PI * 1.5, x: 0.08, ease: 'none' }, 0.2)
+    // Transition
+    .to(modelPivot.position, { x: -0.85, y: -0.18, z: 0.4, ease: 'power1.inOut' }, 0.45)
+    .to(modelPivot.rotation, { y: Math.PI * 2.8, ease: 'none' }, 0.45)
+    // Buy Section: Sits prominently in the right column
+    .to(modelPivot.position, { x: 0.78, y: 0.02, z: 0.7, ease: 'power2.out' }, 0.7)
+    .to(modelPivot.rotation, { y: Math.PI * 4, x: 0, ease: 'power1.inOut' }, 0.7)
+    // Lookbook & FAQ: Sinks smoothly away
+    .to(modelPivot.position, { y: -4.5, z: -1, ease: 'power2.in' }, 0.88)
+    .to(modelPivot.scale, { x: 0.05, y: 0.05, z: 0.05, ease: 'power2.in' }, 0.88);
 });
 
-scrollTimeline
-  // In Specs Section: drifts right & rotates
-  .to(modelPivot.position, { x: 0.9, y: -0.15, z: 0.2, ease: 'power1.inOut' }, 0.2)
-  .to(modelPivot.rotation, { y: Math.PI * 1.5, x: 0.08, ease: 'none' }, 0.2)
-  // Transition
-  .to(modelPivot.position, { x: -0.85, y: -0.18, z: 0.4, ease: 'power1.inOut' }, 0.45)
-  .to(modelPivot.rotation, { y: Math.PI * 2.8, ease: 'none' }, 0.45)
-  // In Buy Section: Sits prominently in the right column
-  .to(modelPivot.position, { x: 0.78, y: 0.02, z: 0.7, ease: 'power2.out' }, 0.7)
-  .to(modelPivot.rotation, { y: Math.PI * 4, x: 0, ease: 'power1.inOut' }, 0.7)
-  // In Lookbook & FAQ: Sinks smoothly away
-  .to(modelPivot.position, { y: -4.5, z: -1, ease: 'power2.in' }, 0.88)
-  .to(modelPivot.scale, { x: 0.05, y: 0.05, z: 0.05, ease: 'power2.in' }, 0.88);
+// Mobile & Smartphones (<= 768px): stays centered so sleeves don't clip outside view
+mm.add("(max-width: 768px)", () => {
+  const mobileTL = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#main-content',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 1.2,
+    },
+  });
+
+  mobileTL
+    // Specs Section: stays horizontally centered, subtle vertical float & angle
+    .to(modelPivot.position, { x: 0, y: 0.25, z: -0.2, ease: 'power1.inOut' }, 0.2)
+    .to(modelPivot.rotation, { y: Math.PI * 1.5, x: 0.05, ease: 'none' }, 0.2)
+    // Buy Section: centered with nice rotation
+    .to(modelPivot.position, { x: 0, y: 0.35, z: 0, ease: 'power1.inOut' }, 0.45)
+    .to(modelPivot.rotation, { y: Math.PI * 3.0, ease: 'none' }, 0.45)
+    // Lookbook & FAQ: Sinks cleanly away
+    .to(modelPivot.position, { y: -5, z: -1, ease: 'power2.in' }, 0.84)
+    .to(modelPivot.scale, { x: 0.05, y: 0.05, z: 0.05, ease: 'power2.in' }, 0.84);
+});
 
 /* ==========================================================================
-   5. INTERACTIVE 3D CONTROLS (DRAG TO ROTATE & PARALLAX)
+   5. INTERACTIVE 3D CONTROLS (TOUCH-FRIENDLY ROTATE & PARALLAX)
    ========================================================================== */
 let isDragging = false;
 let previousPointerX = 0;
 let previousPointerY = 0;
+let pointerStartX = 0;
+let pointerStartY = 0;
+let isTouchMode = false;
 let targetRotY = 0;
 let targetRotX = 0;
 let mouseParallaxX = 0;
 let mouseParallaxY = 0;
 
 window.addEventListener('pointerdown', (e) => {
-  // Only start drag if not clicking buttons or interactive UI
-  if (e.target.closest('button, a, input, .modal-card, .buy-card-modern, .faq-item')) return;
-  isDragging = true;
-  previousPointerX = e.clientX;
-  previousPointerY = e.clientY;
+  // Never hijack clicks on UI, links, buttons or drawer
+  if (e.target.closest('button, a, input, .modal-card, .buy-card-modern, .faq-item, .mobile-nav')) return;
+  
+  pointerStartX = e.clientX;
+  pointerStartY = e.clientY;
+  isTouchMode = e.pointerType === 'touch';
+
+  if (!isTouchMode) {
+    isDragging = true;
+    previousPointerX = e.clientX;
+    previousPointerY = e.clientY;
+  }
 });
 
 window.addEventListener('pointermove', (e) => {
-  // Track normalized mouse for subtle parallax
-  mouseParallaxX = (e.clientX / window.innerWidth - 0.5) * 0.3;
-  mouseParallaxY = (e.clientY / window.innerHeight - 0.5) * 0.2;
+  // Track normalized pointer for subtle ambient tilt
+  mouseParallaxX = (e.clientX / window.innerWidth - 0.5) * 0.25;
+  mouseParallaxY = (e.clientY / window.innerHeight - 0.5) * 0.15;
+
+  // On touch devices: only engage 3D rotation if gesture is predominantly horizontal
+  // This allows smooth natural vertical page scrolling!
+  if (isTouchMode && !isDragging) {
+    const diffX = Math.abs(e.clientX - pointerStartX);
+    const diffY = Math.abs(e.clientY - pointerStartY);
+    if (diffX > 12 && diffX > diffY * 1.3) {
+      isDragging = true;
+      previousPointerX = e.clientX;
+      previousPointerY = e.clientY;
+    }
+  }
 
   if (!isDragging) return;
   const deltaX = e.clientX - previousPointerX;
@@ -247,6 +302,7 @@ window.addEventListener('pointermove', (e) => {
 
 window.addEventListener('pointerup', () => {
   isDragging = false;
+  isTouchMode = false;
 });
 
 // View Angle Switcher Buttons
@@ -335,12 +391,16 @@ function animate() {
 }
 animate();
 
-// Resize Handler
+// Responsive Resize Handler
 window.addEventListener('resize', () => {
+  const isSmall = window.innerWidth <= 480;
+  const isMobile = window.innerWidth <= 768;
   camera.aspect = window.innerWidth / window.innerHeight;
+  camera.position.z = isSmall ? 5.8 : (isMobile ? 5.2 : 4.8);
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  ScrollTrigger.refresh();
 });
 
 /* ==========================================================================
@@ -536,3 +596,67 @@ if (audioToggleBtn) {
     }
   });
 }
+
+/* ==========================================================================
+   9. MOBILE NAVIGATION DRAWER CONTROLLER
+   ========================================================================== */
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const mobileNav = document.getElementById('mobile-nav');
+const mobileNavClose = document.getElementById('mobile-nav-close');
+const mobileNavBackdrop = document.getElementById('mobile-nav-backdrop');
+const mobileNavLinks = document.querySelectorAll('.mobile-nav-link, .mobile-cta-link');
+
+function openMobileMenu() {
+  if (mobileNav && mobileMenuBtn) {
+    mobileNav.classList.add('open');
+    mobileNav.setAttribute('aria-hidden', 'false');
+    mobileMenuBtn.classList.add('active');
+    mobileMenuBtn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeMobileMenu() {
+  if (mobileNav && mobileMenuBtn) {
+    mobileNav.classList.remove('open');
+    mobileNav.setAttribute('aria-hidden', 'true');
+    mobileMenuBtn.classList.remove('active');
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+}
+
+if (mobileMenuBtn) {
+  mobileMenuBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (mobileNav && mobileNav.classList.contains('open')) {
+      closeMobileMenu();
+    } else {
+      openMobileMenu();
+    }
+  });
+}
+
+if (mobileNavClose) {
+  mobileNavClose.addEventListener('click', closeMobileMenu);
+}
+
+if (mobileNavBackdrop) {
+  mobileNavBackdrop.addEventListener('click', closeMobileMenu);
+}
+
+mobileNavLinks.forEach((link) => {
+  link.addEventListener('click', function (e) {
+    const targetId = this.getAttribute('href');
+    closeMobileMenu();
+    if (targetId && targetId !== '#') {
+      const targetEl = document.querySelector(targetId);
+      if (targetEl) {
+        e.preventDefault();
+        setTimeout(() => {
+          lenis.scrollTo(targetEl, { offset: -60, duration: 1.2 });
+        }, 150);
+      }
+    }
+  });
+});
