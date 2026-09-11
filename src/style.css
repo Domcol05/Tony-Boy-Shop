@@ -284,13 +284,18 @@ body {
 .packshot-main-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4;
-  max-height: 600px;
+  aspect-ratio: 1.25 / 1;
+  max-height: 640px;
   background: transparent;
   border: none;
-  overflow: visible;
+  border-radius: var(--radius-md);
+  overflow: hidden;
   cursor: pointer;
   box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast);
 }
 
 .packshot-image {
@@ -299,11 +304,11 @@ body {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 1.25rem;
+  padding: 0;
   opacity: 0;
   pointer-events: none;
-  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.85));
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s ease;
+  filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.95)) drop-shadow(0 4px 15px rgba(225, 29, 72, 0.08));
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   transform-origin: center center;
 }
 
@@ -312,123 +317,128 @@ body {
   pointer-events: auto;
 }
 
+/* Zoom state */
+.packshot-main-frame.is-zoomed {
+  cursor: zoom-out;
+}
+
+.packshot-main-frame.is-zoomed .packshot-image.active {
+  transform: scale(1.65);
+}
+
+/* 3D Canvas in Hero */
+.packshot-3d-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 4;
+  transition: opacity 0.35s ease;
+}
+
+.packshot-3d-canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.packshot-main-frame.mode-3d .packshot-3d-canvas {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.packshot-main-frame.mode-3d .packshot-image {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 .packshot-badge-tag {
   position: absolute;
-  top: 1.2rem;
-  left: 1.2rem;
+  top: 1rem;
+  left: 1rem;
   padding: 0.35rem 0.75rem;
-  background: rgba(8, 8, 10, 0.75);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(8, 8, 10, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-xs);
   font-size: 0.68rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.12em;
   color: var(--text-secondary);
   pointer-events: none;
-  z-index: 5;
+  z-index: 6;
+  text-transform: uppercase;
 }
 
-.packshot-flip-trigger {
-  position: absolute;
-  bottom: 1.2rem;
-  right: 1.2rem;
+/* ==========================================================================
+   BARRA DEI MENU ORIZZONTALE RAGGRUPPATA E CENTRATA
+   (FRONT, BACK, ZOOM) - DARK & TECHNICAL STREETWEAR STYLE
+   ========================================================================== */
+.packshot-menu-bar {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin-top: 1.25rem;
+  padding: 0.35rem;
+  background: rgba(14, 14, 18, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  z-index: 10;
+}
+
+.tech-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: 0.45rem;
-  padding: 0.55rem 0.95rem;
-  background: #ffffff;
-  color: #08080a;
-  border: none;
+  padding: 0.6rem 1.1rem;
+  background: transparent;
+  border: 1px solid transparent;
   border-radius: var(--radius-xs);
+  color: var(--text-secondary);
   font-family: var(--font-sans);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: transform var(--transition-fast), background var(--transition-fast);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-  z-index: 10;
-}
-
-.packshot-flip-trigger:hover {
-  background: #f3f4f6;
-  transform: scale(1.04);
-}
-
-.packshot-controls-bar {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1.2rem;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.packshot-thumbnails {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.packshot-thumb-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0.8rem 0.35rem 0.45rem;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xs);
-  cursor: pointer;
-  color: var(--text-secondary);
-  font-family: var(--font-sans);
   transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 
-.packshot-thumb-btn:hover {
-  border-color: var(--border-light);
-  color: #ffffff;
+.tech-nav-btn svg {
+  flex-shrink: 0;
+  stroke: currentColor;
+  transition: transform var(--transition-fast);
+}
+
+.tech-nav-btn:hover {
   background: rgba(255, 255, 255, 0.08);
-}
-
-.packshot-thumb-btn.active {
-  border-color: #ffffff;
-  background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.16);
 }
 
-.thumb-img-wrap {
-  width: 30px;
-  height: 38px;
-  border-radius: 2px;
-  overflow: hidden;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.tech-nav-btn:hover svg {
+  transform: scale(1.1);
 }
 
-.thumb-img-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.tech-nav-btn.active {
+  background: #ffffff;
+  color: #08080a;
+  border-color: #ffffff;
+  font-weight: 800;
+  box-shadow: 0 2px 14px rgba(255, 255, 255, 0.22);
 }
 
-.thumb-label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.packshot-hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  letter-spacing: 0.04em;
+.tech-nav-btn.active svg {
+  stroke: #08080a;
 }
 
 /* Colonna Destra: Blocco d'Acquisto Compatto */
@@ -1362,11 +1372,28 @@ body {
 
   .packshot-main-frame {
     max-height: 420px;
+    aspect-ratio: 1.15 / 1;
   }
 
-  .packshot-controls-bar {
-    flex-direction: column;
-    align-items: flex-start;
+  .packshot-menu-bar {
+    width: 100%;
+    max-width: 440px;
+    justify-content: space-between;
+    gap: 0.25rem;
+    padding: 0.25rem;
+  }
+
+  .tech-nav-btn {
+    padding: 0.5rem 0.55rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    gap: 0.3rem;
+    flex: 1;
+  }
+
+  .tech-nav-btn svg {
+    width: 13px;
+    height: 13px;
   }
 
   .product-title {

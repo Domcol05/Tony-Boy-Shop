@@ -54,85 +54,266 @@ setTimeout(() => {
 }, 800);
 
 /* ==========================================================================
-   3. PACKSHOT VIEWER (FRONTE LISCIO & RETRO CON GRAFICA GOING HARD)
+   3. UNIFIED PACKSHOT & 3D VIEWER (VIEW 3D, FRONT, BACK, ZOOM)
    ========================================================================== */
 const packshotFrame = document.getElementById('packshot-frame');
 const frontImg = document.getElementById('packshot-img-front');
 const backImg = document.getElementById('packshot-img-back');
 const packshotBadge = document.getElementById('packshot-badge');
-const flipBtn = document.getElementById('packshot-flip-btn');
-const thumbBtns = document.querySelectorAll('.packshot-thumb-btn');
+const canvasContainer = document.getElementById('canvas-container');
+const canvas3d = document.getElementById('webgl');
 
-let currentView = 'back'; // 'front' or 'back' (default: back view upon opening)
+const btnMode3D = document.getElementById('btn-mode-3d');
+const btnModeFront = document.getElementById('btn-mode-front');
+const btnModeBack = document.getElementById('btn-mode-back');
+const btnModeZoom = document.getElementById('btn-mode-zoom');
 
-function setPackshotView(view) {
-  currentView = view;
+let currentMode = 'back'; // 'back' (default upon opening), 'front', 'view3d'
+let isZoomed = false;
 
-  if (view === 'front') {
-    if (frontImg) frontImg.classList.add('active');
-    if (backImg) backImg.classList.remove('active');
-    if (packshotBadge) packshotBadge.textContent = 'FRONTE // MINIMAL CUT';
-  } else {
-    if (frontImg) frontImg.classList.remove('active');
-    if (backImg) backImg.classList.add('active');
-    if (packshotBadge) packshotBadge.textContent = 'RETRO // GOING HARD SERIGRAFIA';
+// 3D Three.js State
+let scene3d, camera3d, renderer3d, controls3d, modelPivot;
+let is3dInitialized = false;
+let is3dLoading = false;
+
+function init3D() {
+  if (is3dInitialized || !canvas3d || !canvasContainer) return;
+  is3dLoading = true;
+
+  const width = canvasContainer.clientWidth || 500;
+  const height = canvasContainer.clientHeight || 500;
+
+  scene3d = new THREE.Scene();
+
+  camera3d = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+  camera3d.position.set(0, 0, 4.8);
+
+  renderer3d = new THREE.WebGLRenderer({
+    canvas: canvas3d,
+    alpha: true,
+    antialias: true,
+    powerPreference: 'high-performance',
+  });
+  renderer3d.setSize(width, height);
+  renderer3d.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer3d.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer3d.toneMappingExposure = 1.35;
+  renderer3d.outputColorSpace = THREE.SRGBColorSpace;
+
+  // Orbit controls for free touch/mouse rotation
+  controls3d = new OrbitControls(camera3d, canvas3d);
+  controls3d.enableDamping = true;
+  controls3d.dampingFactor = 0.06;
+  controls3d.enablePan = false;
+  controls3d.minDistance = 2.4;
+  controls3d.maxDistance = 5.8;
+
+  // Studio lighting setup - noir dark streetwear mood
+  const ambientLight = new THREE.AmbientLight(0x280d16, 1.4);
+  scene3d.add(ambientLight);
+
+  const keyLight = new THREE.DirectionalLight(0x7dd3fc, 3.2);
+  keyLight.position.set(3, 3.5, 4.5);
+  scene3d.add(keyLight);
+
+  const fillLight = new THREE.DirectionalLight(0x38bdf8, 1.4);
+  fillLight.position.set(-4, 1.5, 3);
+  scene3d.add(fillLight);
+
+  const rimLightCrimson = new THREE.DirectionalLight(0xff1744, 4.2);
+  rimLightCrimson.position.set(0, 3, -4);
+  scene3d.add(rimLightCrimson);
+
+  const rimLightRose = new THREE.DirectionalLight(0xf43f5e, 2.2);
+  rimLightRose.position.set(4, -1.5, -2.5);
+  scene3d.add(rimLightRose);
+
+  modelPivot = new THREE.Group();
+  modelPivot.position.set(0, -0.05, 0);
+  scene3d.add(modelPivot);
+
+  const loader = new GLTFLoader();
+  const modelUrl = `${import.meta.env.BASE_URL}models/tshirt.glb`;
+
+  loader.load(
+    modelUrl,
+    (gltf) => {
+      const tshirt = gltf.scene;
+      const box = new THREE.Box3().setFromObject(tshirt);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const targetSize = 2.45;
+      const scaleFactor = targetSize / maxDim;
+
+      tshirt.scale.setScalar(scaleFactor);
+      tshirt.position.x = -center.x * scaleFactor;
+      tshirt.position.y = -center.y * scaleFactor;
+      tshirt.position.z = -center.z * scaleFactor;
+
+      tshirt.traverse((child) => {
+        if (child.isMesh && child.material) {
+          child.material = child.material.clone();
+          child.material.roughness = 0.82;
+          child.material.metalness = 0.12;
+          child.material.color.set('#141418');
+        }
+      });
+
+      // Default back orientation so retro is visible
+      modelPivot.rotation.y = Math.PI;
+      modelPivot.add(tshirt);
+
+      is3dInitialized = true;
+      is3dLoading = false;
+    },
+    undefined,
+    (error) => {
+      console.warn('Notice: 3D model loading:', error);
+      is3dLoading = false;
+    }
+  );
+
+  function animate3D() {
+    requestAnimationFrame(animate3D);
+    if (controls3d) controls3d.update();
+    if (renderer3d && scene3d && camera3d) {
+      renderer3d.render(scene3d, camera3d);
+    }
+  }
+  animate3D();
+
+  window.addEventListener('resize', onResize3D);
+}
+
+function onResize3D() {
+  if (!renderer3d || !camera3d || !canvasContainer) return;
+  const width = canvasContainer.clientWidth;
+  const height = canvasContainer.clientHeight;
+  if (width && height) {
+    camera3d.aspect = width / height;
+    camera3d.updateProjectionMatrix();
+    renderer3d.setSize(width, height);
+  }
+}
+
+function setVisualizerMode(mode) {
+  if (mode === 'zoom') {
+    toggleZoom();
+    return;
   }
 
-  // Update thumb buttons
-  thumbBtns.forEach((btn) => {
-    if (btn.dataset.view === view) {
-      btn.classList.add('active');
+  currentMode = mode;
+
+  // Update nav buttons
+  if (btnMode3D) btnMode3D.classList.toggle('active', mode === 'view3d');
+  if (btnModeFront) btnModeFront.classList.toggle('active', mode === 'front');
+  if (btnModeBack) btnModeBack.classList.toggle('active', mode === 'back');
+
+  if (mode === 'view3d') {
+    if (packshotFrame) packshotFrame.classList.add('mode-3d');
+    if (packshotBadge) packshotBadge.textContent = '3D // INTERACTIVE 360° VIEW';
+    if (!is3dInitialized) {
+      init3D();
     } else {
-      btn.classList.remove('active');
+      onResize3D();
     }
-  });
+  } else {
+    if (packshotFrame) packshotFrame.classList.remove('mode-3d');
+
+    if (mode === 'front') {
+      if (frontImg) frontImg.classList.add('active');
+      if (backImg) backImg.classList.remove('active');
+      if (packshotBadge) packshotBadge.textContent = 'FRONTE // MINIMAL CUT';
+    } else {
+      // Default: back
+      if (frontImg) frontImg.classList.remove('active');
+      if (backImg) backImg.classList.add('active');
+      if (packshotBadge) packshotBadge.textContent = 'RETRO // GOING HARD SERIGRAFIA';
+    }
+  }
+
+  if (isZoomed) {
+    if (packshotBadge) packshotBadge.textContent += ' [ZOOM 165%]';
+  }
 }
 
-// Thumb buttons click
-thumbBtns.forEach((btn) => {
-  btn.addEventListener('click', (e) => {
-    const view = e.currentTarget.dataset.view;
-    setPackshotView(view);
-  });
+function toggleZoom() {
+  isZoomed = !isZoomed;
+  if (btnModeZoom) btnModeZoom.classList.toggle('active', isZoomed);
+  if (packshotFrame) packshotFrame.classList.toggle('is-zoomed', isZoomed);
+
+  if (isZoomed) {
+    if (packshotBadge) packshotBadge.textContent += ' [ZOOM 165%]';
+  } else {
+    if (currentMode === 'view3d') {
+      if (packshotBadge) packshotBadge.textContent = '3D // INTERACTIVE 360° VIEW';
+    } else if (currentMode === 'front') {
+      if (packshotBadge) packshotBadge.textContent = 'FRONTE // MINIMAL CUT';
+    } else {
+      if (packshotBadge) packshotBadge.textContent = 'RETRO // GOING HARD SERIGRAFIA';
+    }
+    const activeImg = currentMode === 'front' ? frontImg : backImg;
+    if (activeImg) {
+      activeImg.style.transform = '';
+    }
+  }
+}
+
+// Attach click listeners to menu bar buttons
+if (btnMode3D) btnMode3D.addEventListener('click', () => setVisualizerMode('view3d'));
+if (btnModeFront) btnModeFront.addEventListener('click', () => setVisualizerMode('front'));
+if (btnModeBack) btnModeBack.addEventListener('click', () => setVisualizerMode('back'));
+if (btnModeZoom) btnModeZoom.addEventListener('click', toggleZoom);
+
+// Pre-init 3D after idle so clicking VIEW 3D is instantaneous
+window.addEventListener('load', () => {
+  setTimeout(init3D, 900);
 });
 
-// Flip Button click
-if (flipBtn) {
-  flipBtn.addEventListener('click', () => {
-    const nextView = currentView === 'front' ? 'back' : 'front';
-    setPackshotView(nextView);
-  });
-}
-
-// Click on the packshot image directly flips between front and back
+// Click directly on the packshot image flips between front and back
 if (packshotFrame) {
-  packshotFrame.addEventListener('click', (e) => {
-    if (e.target.closest('#packshot-flip-btn')) return;
-    const nextView = currentView === 'front' ? 'back' : 'front';
-    setPackshotView(nextView);
+  packshotFrame.addEventListener('click', () => {
+    if (isZoomed) {
+      toggleZoom();
+      return;
+    }
+    const nextMode = currentMode === 'front' ? 'back' : 'front';
+    setVisualizerMode(nextMode);
   });
 
-  // Interactive subtle pan on mouse move (Desktop)
+  // Dynamic interactive pan in zoom mode, subtle 3D tilt when unzoomed
   packshotFrame.addEventListener('mousemove', (e) => {
     const rect = packshotFrame.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width;
     const y = (e.clientY - rect.top) / rect.height;
+    const activeImg = currentMode === 'front' ? frontImg : backImg;
 
-    const activeImg = currentView === 'front' ? frontImg : backImg;
     if (activeImg) {
-      const moveX = (x - 0.5) * 16;
-      const moveY = (y - 0.5) * 16;
-      activeImg.style.transform = `scale(1.05) translate(${moveX}px, ${moveY}px)`;
+      if (isZoomed) {
+        const panX = (0.5 - x) * 110;
+        const panY = (0.5 - y) * 110;
+        activeImg.style.transform = `scale(1.65) translate(${panX}px, ${panY}px)`;
+      } else {
+        const moveX = (x - 0.5) * 12;
+        const moveY = (y - 0.5) * 12;
+        activeImg.style.transform = `scale(1.02) translate(${moveX}px, ${moveY}px)`;
+      }
     }
   });
 
   packshotFrame.addEventListener('mouseleave', () => {
-    const activeImg = currentView === 'front' ? frontImg : backImg;
+    const activeImg = currentMode === 'front' ? frontImg : backImg;
     if (activeImg) {
-      activeImg.style.transform = 'scale(1) translate(0px, 0px)';
+      if (isZoomed) {
+        activeImg.style.transform = 'scale(1.65) translate(0px, 0px)';
+      } else {
+        activeImg.style.transform = 'scale(1) translate(0px, 0px)';
+      }
     }
   });
 }
+
 
 /* ==========================================================================
    4. E-COMMERCE SELECTION & CHECKOUT INTERACTIONS
