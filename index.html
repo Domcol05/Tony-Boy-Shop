@@ -3,610 +3,502 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-    <title>TONY BOY — GOING HARD 2 // Official Merch Drop</title>
-    <meta name="description" content="Merchandise ufficiale Tony Boy - Going Hard 2 Edition. T-Shirt esclusiva 280 GSM Heavyweight French Terry Cotton con fit boxy oversize serigrafata." />
+    <title>TONY BOY — GOING HARD 2 BOX TEE // Official Drop</title>
+    <meta name="description" content="Drop ufficiale TONY BOY. T-Shirt esclusiva Pitch Black 280 GSM Heavyweight Cotton con taglio boxy oversize serigrafata. Edizione limitata." />
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Syne (Titoli & Logo) + Inter (Testo neutro & UI moderna) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800;900&display=swap" rel="stylesheet" />
     
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="stylesheet" href="./src/style.css" />
   </head>
   <body>
-    <!-- Preloader con contatore percentuale -->
+    <!-- Preloader essenziale -->
     <div id="preloader" class="preloader">
       <div class="preloader-content">
         <div class="preloader-logo">TONY BOY</div>
-        <div class="preloader-sub">GOING HARD 2 // 3D ASSETS LOADING</div>
+        <div class="preloader-sub">GOING HARD 2 // DROP 001</div>
         <div class="progress-bar-container">
           <div id="progress-bar" class="progress-bar"></div>
         </div>
-        <div id="progress-text" class="progress-text">0%</div>
+        <div id="progress-text" class="progress-text">100%</div>
       </div>
     </div>
 
-    <!-- Canvas 3D Three.js a tutto schermo fisso -->
-    <div id="canvas-wrapper">
-      <canvas id="webgl"></canvas>
-    </div>
-
-    <!-- Header Glassmorphism -->
-    <header class="glass-header">
-      <div class="header-inner">
-        <a href="#hero" class="brand-logo">
+    <!-- 1. Header Sticky Minimale (Unica navbar) -->
+    <header class="site-header">
+      <div class="header-container">
+        <a href="#hero" class="brand-logo" aria-label="Tony Boy Home">
           <span class="logo-text">TONY BOY</span>
-          <span class="logo-sub">GOING HARD 2</span>
+          <span class="logo-badge">DROP 001</span>
         </a>
 
-        <div class="drop-status-badge">
-          <span class="pulse-dot"></span>
-          <span class="status-label">GOING HARD 2 DROP ACTIVE</span>
-        </div>
-
-        <nav class="nav-links">
-          <a href="#hero" class="nav-link">Capo</a>
-          <a href="#details" class="nav-link">Specifiche</a>
-          <a href="#buy" class="nav-link">Acquista</a>
-          <a href="#lookbook" class="nav-link">Lookbook</a>
-          <a href="#faq" class="nav-link">FAQ</a>
-        </nav>
-
-        <div class="header-actions">
-          <!-- Ambient Audio Sound Toggle -->
-          <button id="audio-toggle" class="audio-btn" title="Attiva/Disattiva Audio Atmosfera" aria-label="Audio atmosfera">
-            <span class="audio-bars">
-              <span class="bar bar-1"></span>
-              <span class="bar bar-2"></span>
-              <span class="bar bar-3"></span>
-            </span>
-            <span id="audio-label" class="audio-label">VIBE</span>
-          </button>
-
-          <a href="#buy" class="cart-btn" aria-label="Carrello">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="header-right">
+          <a href="#buy-block" class="cart-trigger" aria-label="Visualizza carrello">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
               <path d="M3 6h18"/>
               <path d="M16 10a4 4 0 0 1-8 0"/>
             </svg>
-            <span id="cart-counter" class="cart-badge">0</span>
+            <span class="cart-label">CARRELLO</span>
+            <span id="cart-counter" class="cart-count">0</span>
           </a>
-
-          <!-- Mobile Hamburger Toggle -->
-          <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Apri menu" aria-expanded="false">
-            <span class="hamburger-bar"></span>
-            <span class="hamburger-bar"></span>
-          </button>
         </div>
       </div>
     </header>
 
-    <!-- Mobile Navigation Drawer -->
-    <div id="mobile-nav" class="mobile-nav" aria-hidden="true">
-      <div class="mobile-nav-backdrop" id="mobile-nav-backdrop"></div>
-      <div class="mobile-nav-panel">
-        <div class="mobile-nav-top">
-          <div class="brand-logo">
-            <span class="logo-text">TONY BOY</span>
-            <span class="logo-sub">GOING HARD 2 ARCHIVE</span>
-          </div>
-          <button id="mobile-nav-close" class="mobile-nav-close" aria-label="Chiudi menu">✕</button>
-        </div>
-        <nav class="mobile-nav-links">
-          <a href="#hero" class="mobile-nav-link">
-            <span class="nav-idx">01</span>
-            <span class="nav-txt">IL CAPO</span>
-          </a>
-          <a href="#details" class="mobile-nav-link">
-            <span class="nav-idx">02</span>
-            <span class="nav-txt">SPECIFICHE</span>
-          </a>
-          <a href="#buy" class="mobile-nav-link">
-            <span class="nav-idx">03</span>
-            <span class="nav-txt">ACQUISTA</span>
-          </a>
-          <a href="#lookbook" class="mobile-nav-link">
-            <span class="nav-idx">04</span>
-            <span class="nav-txt">LOOKBOOK</span>
-          </a>
-          <a href="#faq" class="mobile-nav-link">
-            <span class="nav-idx">05</span>
-            <span class="nav-txt">FAQ & INFO</span>
-          </a>
-        </nav>
-        <div class="mobile-nav-bottom">
-          <div class="mobile-album-tag">
-            <span class="flame-icon">🔥</span>
-            <span>GOING HARD 2 OFFICIAL DROP</span>
-          </div>
-          <a href="#buy" class="btn btn-purchase mobile-cta-link">ACQUISTA ORA — € 45,00</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main Content -->
     <main id="main-content">
-      <!-- 1. Hero Section -->
-      <section id="hero" class="section hero-section">
-        <div class="hero-container">
-          <div class="edition-pill">
-            <span class="pill-sparkle">🌹</span>
-            <span>GOING HARD 2 // SPECIAL ARCHIVE DROP // 300 PCS</span>
+      <!-- 2. Hero & Sezione Acquisto (Split View Integrata) -->
+      <section id="hero" class="hero-split-section">
+        <div class="split-container">
+          
+          <!-- Colonna Sinistra: Packshot Reale Interattivo (Fronte Pulito & Retro Going Hard) -->
+          <div class="visualizer-column">
+            <div class="packshot-viewer-wrapper">
+              
+              <div class="packshot-main-frame" id="packshot-frame">
+                <!-- Immagine Fronte -->
+                <img 
+                  id="packshot-img-front" 
+                  src="./images/packshot-front.jpg" 
+                  alt="Tony Boy Going Hard 2 Box Tee - Fronte Liscio" 
+                  class="packshot-image" 
+                />
+                <!-- Immagine Retro -->
+                <img 
+                  id="packshot-img-back" 
+                  src="./images/packshot-back.jpg" 
+                  alt="Tony Boy Going Hard 2 Box Tee - Retro con Grafica Serigrafata Going Hard" 
+                  class="packshot-image active" 
+                />
+                
+                <!-- Badge Prospettiva Corrente -->
+                <div class="packshot-badge-tag" id="packshot-badge">RETRO // GOING HARD SERIGRAFIA</div>
+                
+                <!-- Pulsante Rapido Gira Capo -->
+                <button type="button" id="packshot-flip-btn" class="packshot-flip-trigger" aria-label="Gira capo tra fronte e retro">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                    <path d="M3 3v5h5"/>
+                    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                    <path d="M16 21h5v-5"/>
+                  </svg>
+                  <span>GIRA CAPO</span>
+                </button>
+              </div>
+
+              <!-- Controlli & Miniature Packshot -->
+              <div class="packshot-controls-bar">
+                <div class="packshot-thumbnails">
+                  <button type="button" class="packshot-thumb-btn active" data-view="back" aria-label="Visualizza Retro">
+                    <div class="thumb-img-wrap">
+                      <img src="./images/packshot-back.jpg" alt="Miniatura Retro" />
+                    </div>
+                    <span class="thumb-label">RETRO</span>
+                  </button>
+
+                  <button type="button" class="packshot-thumb-btn" data-view="front" aria-label="Visualizza Fronte">
+                    <div class="thumb-img-wrap">
+                      <img src="./images/packshot-front.jpg" alt="Miniatura Fronte" />
+                    </div>
+                    <span class="thumb-label">FRONTE</span>
+                  </button>
+                </div>
+
+                <div class="packshot-hint">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    <line x1="11" y1="8" x2="11" y2="14"/>
+                    <line x1="8" y1="11" x2="14" y2="11"/>
+                  </svg>
+                  <span>Tocca o clicca per ispezionare fronte e retro</span>
+                </div>
+              </div>
+
+            </div>
           </div>
 
-          <h1 class="hero-title">
-            <span class="title-line">TONY BOY</span>
-            <span class="title-sub">GOING HARD 2 TEE</span>
-          </h1>
-
-          <p class="hero-description">
-            La silhouette definitiva ispirata alle atmosfere cupe e infuocate di <strong>Going Hard 2</strong>. 280 GSM French Terry Cotton, spalle scese e serigrafia gommata alta densità fronte/retro.
-          </p>
-
-          <div class="hero-cta-group">
-            <a href="#buy" class="btn btn-primary shimmer-effect">
-              <span>ORDINA ORA — € 45</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-            </a>
-            <a href="#details" class="btn btn-secondary">
-              <span>ESPLORA SCHEDA</span>
-            </a>
-          </div>
-
-          <!-- Floating 3D Control Bar -->
-          <div class="model-control-panel">
-            <div class="control-group">
-              <span class="control-label">PROSPETTIVA 3D:</span>
-              <div class="view-buttons">
-                <button class="view-btn active" data-view="front">FRONTE</button>
-                <button class="view-btn" data-view="back">RETRO</button>
-                <button class="view-btn" data-view="detail">DETTAGLIO</button>
-                <button id="spin-toggle" class="view-btn" data-view="spin">360° SPIN</button>
+          <!-- Colonna Destra: Blocco d'Acquisto Compatto -->
+          <div class="buy-column" id="buy-block">
+            <div class="buy-block-inner">
+              
+              <!-- Badge Drop Esclusivo -->
+              <div class="drop-meta">
+                <span class="drop-live-indicator">
+                  <span class="pulse-dot"></span>
+                  GOING HARD 2 DROP ESCLUSIVO
+                </span>
+                <span class="stock-info">Tiratura limitata 300 pz</span>
               </div>
-            </div>
 
-            <div class="control-group">
-              <span class="control-label">COLORE:</span>
-              <div class="color-swatches">
-                <button class="color-swatch active" data-color="#120407" data-name="Going Hard Noir" title="Going Hard Noir"></button>
-                <button class="color-swatch" data-color="#881320" data-name="Crimson Hard 2" title="Crimson Hard 2"></button>
-                <button class="color-swatch" data-color="#e2e8f0" data-name="Ice White Edition" title="Ice White Edition"></button>
-                <button class="color-swatch" data-color="#2a2930" data-name="Washed Charcoal" title="Washed Charcoal"></button>
+              <!-- Titolo Prodotto & Prezzo -->
+              <h1 class="product-title">TONY BOY – GOING HARD 2 BOX TEE</h1>
+              
+              <div class="product-pricing">
+                <span class="price-value">€ 45,00</span>
+                <span class="tax-note">IVA inclusa • Spedizione gratuita oltre € 75</span>
               </div>
-            </div>
-          </div>
 
-          <div class="scroll-cue">
-            <div class="mouse-icon">
-              <span class="mouse-wheel"></span>
-            </div>
-            <span class="scroll-text">SCORRI PER ISPEZIONARE IL CAPO</span>
-          </div>
-        </div>
-      </section>
+              <div class="divider-line"></div>
 
-      <!-- Marquee Ribbon -->
-      <div class="marquee-wrapper">
-        <div class="marquee-track">
-          <span>TONY BOY ARCHIVE DROP 001</span>
-          <span class="star">★</span>
-          <span>100% ORGANIC HEAVYWEIGHT COTTON 280 GSM</span>
-          <span class="star">★</span>
-          <span>BOXY OVERSIZE FIT</span>
-          <span class="star">★</span>
-          <span>HIGH-DENSITY SCREENPRINT</span>
-          <span class="star">★</span>
-          <span>EXCLUSIVE STREETWEAR CUT</span>
-          <span class="star">★</span>
-          <span>SPEDIZIONE TRACCIATA 24/48H</span>
-          <span class="star">★</span>
-          <!-- Duplicate for seamless loop -->
-          <span>TONY BOY ARCHIVE DROP 001</span>
-          <span class="star">★</span>
-          <span>100% ORGANIC HEAVYWEIGHT COTTON 280 GSM</span>
-          <span class="star">★</span>
-          <span>BOXY OVERSIZE FIT</span>
-          <span class="star">★</span>
-          <span>HIGH-DENSITY SCREENPRINT</span>
-          <span class="star">★</span>
-          <span>EXCLUSIVE STREETWEAR CUT</span>
-          <span class="star">★</span>
-          <span>SPEDIZIONE TRACCIATA 24/48H</span>
-          <span class="star">★</span>
-        </div>
-      </div>
-
-      <!-- 2. Product Specs Section -->
-      <section id="details" class="section specs-section">
-        <div class="section-container">
-          <div class="section-badge">ARCHIVE SPECIFICATIONS</div>
-          <h2 class="section-title">COSTRUZIONE & QUALITÀ PREMIUM</h2>
-          <p class="section-subtitle">
-            Ogni capo dell'archivio Tony Boy è sviluppato partendo da zero: dal taglio del tessuto alla consistenza della grammatura.
-          </p>
-
-          <div class="specs-grid">
-            <div class="spec-card">
-              <div class="spec-number">01</div>
-              <div class="spec-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                </svg>
+              <!-- Dicitura Statica Colore (Nessun selettore, 100% Black) -->
+              <div class="colorway-row">
+                <span class="spec-label">Colorway:</span>
+                <div class="colorway-value">
+                  <span class="black-swatch-dot"></span>
+                  <strong>Pitch Black</strong>
+                </div>
               </div>
-              <h3 class="spec-title">280 GSM French Terry</h3>
-              <p class="spec-desc">
-                Cotone pettinato ad altissima densità. Struttura pesante e caduta rigida che mantiene la forma lavaggio dopo lavaggio.
-              </p>
-              <div class="spec-tag">100% COTONE NATURALE</div>
-            </div>
 
-            <div class="spec-card">
-              <div class="spec-number">02</div>
-              <div class="spec-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                </svg>
+              <!-- Selettore Taglie Essenziale a Pulsanti Rettangolari -->
+              <div class="size-selection-area">
+                <div class="size-header-row">
+                  <span class="spec-label">Seleziona Taglia:</span>
+                  <button type="button" id="open-size-guide" class="size-guide-trigger">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 6H3"/>
+                      <path d="M10 12H3"/>
+                      <path d="M10 18H3"/>
+                      <circle cx="17" cy="15" r="3"/>
+                      <path d="m21 19-1.9-1.9"/>
+                    </svg>
+                    Guida alle taglie
+                  </button>
+                </div>
+
+                <div class="size-buttons-grid">
+                  <button type="button" class="size-btn" data-size="S">S</button>
+                  <button type="button" class="size-btn active" data-size="M">M</button>
+                  <button type="button" class="size-btn" data-size="L">L</button>
+                  <button type="button" class="size-btn" data-size="XL">XL</button>
+                </div>
               </div>
-              <h3 class="spec-title">Boxy Oversize Fit</h3>
-              <p class="spec-desc">
-                Spalle ribassate e busto squadrato. Taglio moderno streetwear ispirato alla scena rap underground internazionale.
-              </p>
-              <div class="spec-tag">CUSTOM PATTERN</div>
-            </div>
 
-            <div class="spec-card">
-              <div class="spec-number">03</div>
-              <div class="spec-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-                </svg>
+              <!-- Selettore Quantità Minimale Inline -->
+              <div class="quantity-row">
+                <span class="spec-label">Quantità:</span>
+                <div class="quantity-control">
+                  <button type="button" id="qty-minus" class="qty-btn" aria-label="Diminuisci">−</button>
+                  <span id="qty-value" class="qty-display">1</span>
+                  <button type="button" id="qty-plus" class="qty-btn" aria-label="Aumenta">+</button>
+                </div>
               </div>
-              <h3 class="spec-title">Serigrafia High-Density</h3>
-              <p class="spec-desc">
-                Inchiostri plastisol a rilievo serigrafati a mano. Dettagli grafici tattili, spessi e resistenti a screpolature.
-              </p>
-              <div class="spec-tag">STAMPA FRONTE/RETRO</div>
-            </div>
 
-            <div class="spec-card">
-              <div class="spec-number">04</div>
-              <div class="spec-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10"/>
-                  <path d="m9 12 2 2 4-4"/>
-                </svg>
-              </div>
-              <h3 class="spec-title">Etichetta Jacquard Numerata</h3>
-              <p class="spec-desc">
-                Targhetta tessuta sull'orlo inferiore con certificato di autenticità e codice seriale del drop esclusivo.
-              </p>
-              <div class="spec-tag">OFFICIAL MERCH PASS</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 3. Checkout / Buy Box Section -->
-      <section id="buy" class="section checkout-section">
-        <div class="buy-section-container">
-          <div class="buy-card-modern">
-            <div class="buy-header">
-              <div class="edition-flag">GOING HARD 2 // DROP 001</div>
-              <div class="stock-indicator">
-                <span class="stock-pulse"></span>
-                <span>Solo 38 rimaste in magazzino</span>
-              </div>
-            </div>
-
-            <h2 class="buy-title">TONY BOY — GOING HARD 2 BOX TEE</h2>
-            
-            <div class="buy-pricing">
-              <span class="price-current">€ 45,00</span>
-              <span class="price-old">€ 55,00</span>
-              <span class="price-badge">RISPARMI IL 18%</span>
-            </div>
-            
-            <div class="klarna-notice">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              <span>Oppure 3 rate da <strong>€ 15,00</strong> a tasso zero con <strong>Klarna</strong> / <strong>PayPal</strong></span>
-            </div>
-
-            <div class="divider"></div>
-
-            <!-- Color selection display -->
-            <div class="buy-option-group">
-              <div class="option-header">
-                <span class="option-title">Colore Selezionato:</span>
-                <span id="selected-color-name" class="option-selection">Going Hard Noir</span>
-              </div>
-            </div>
-
-            <!-- Size Selector Pills -->
-            <div class="buy-option-group">
-              <div class="option-header">
-                <span class="option-title">Seleziona Taglia:</span>
-                <button type="button" id="open-size-guide" class="size-guide-btn">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                  Guida alle Taglie
-                </button>
-              </div>
-              <div class="size-pills">
-                <button class="size-pill" data-size="S" data-variant="VARIANTE_ID_S">
-                  <span class="pill-size">S</span>
-                  <span class="pill-note">Disponibile</span>
-                </button>
-                <button class="size-pill active" data-size="M" data-variant="VARIANTE_ID_M">
-                  <span class="pill-size">M</span>
-                  <span class="pill-note">Popolare</span>
-                </button>
-                <button class="size-pill" data-size="L" data-variant="VARIANTE_ID_L">
-                  <span class="pill-size">L</span>
-                  <span class="pill-note">Ultime 5</span>
-                </button>
-                <button class="size-pill" data-size="XL" data-variant="VARIANTE_ID_XL">
-                  <span class="pill-size">XL</span>
-                  <span class="pill-note">Disponibile</span>
-                </button>
-                <button class="size-pill" data-size="XXL" data-variant="VARIANTE_ID_XXL">
-                  <span class="pill-size">XXL</span>
-                  <span class="pill-note">Pochi pezzi</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Quantity Selector -->
-            <div class="buy-option-group">
-              <span class="option-title">Quantità:</span>
-              <div class="quantity-stepper">
-                <button id="qty-minus" class="qty-btn" aria-label="Diminuisci">−</button>
-                <span id="qty-value" class="qty-num">1</span>
-                <button id="qty-plus" class="qty-btn" aria-label="Aumenta">+</button>
-              </div>
-            </div>
-
-            <!-- Buy Action Buttons -->
-            <div class="buy-actions">
-              <button id="buy-btn" class="btn btn-purchase shimmer-effect">
-                <span class="btn-purchase-content">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <!-- CTA Primaria ad Alto Contrasto -->
+              <div class="purchase-action">
+                <button type="button" id="buy-btn" class="btn-primary-cta">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                     <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
                     <path d="M3 6h18"/>
                     <path d="M16 10a4 4 0 0 1-8 0"/>
                   </svg>
                   <span>AGGIUNGI AL CARRELLO</span>
-                </span>
-                <span class="btn-purchase-sub">CHECKOUT ISTANTANEO SICURO</span>
-              </button>
-            </div>
+                </button>
+              </div>
 
-            <!-- Trust Features List -->
-            <div class="trust-features">
-              <div class="trust-item">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><rect width="6" height="6" x="14" y="12" rx="1"/><path d="M18 18h4a1 1 0 0 0 1-1v-5l-4-4h-1"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
-                <span>Spedizione Rapida 24/48h tracciata GLS / DHL</span>
+              <!-- Micro-badge di Rassicurazione sotto la CTA -->
+              <div class="reassurance-badges">
+                <div class="reassurance-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect width="16" height="13" x="2" y="5" rx="2"/>
+                    <path d="M16 8v10M2 10h16M20 9l2 2-2 2"/>
+                  </svg>
+                  <span>Spedizione 24/48h</span>
+                </div>
+                <span class="bullet-sep">•</span>
+                <div class="reassurance-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                    <path d="M21 3v5h-5"/>
+                    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                    <path d="M8 16H3v5"/>
+                  </svg>
+                  <span>Reso garantito</span>
+                </div>
+                <span class="bullet-sep">•</span>
+                <div class="reassurance-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect width="20" height="14" x="2" y="5" rx="2"/>
+                    <line x1="2" x2="22" y1="10" y2="10"/>
+                  </svg>
+                  <span>Pagamenti sicuri / Klarna</span>
+                </div>
               </div>
-              <div class="trust-item">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                <span>Pagamento crittografato SSL 256-bit (Shopify / Stripe)</span>
-              </div>
-              <div class="trust-item">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                <span>Reso garantito entro 14 giorni dalla consegna</span>
-              </div>
+
             </div>
           </div>
 
-          <!-- Colonna Destra: Box Guida & Anteprima 3D -->
-          <div class="buy-model-guide">
-            <div class="model-guide-badge">3D LIVE ROTATION & FIT</div>
-            <h3 class="model-guide-title">ISPEZIONA IL CAPO A 360°</h3>
-            <p class="model-guide-sub">Ruota la t-shirt con il mouse o il touch screen per verificare proporzioni e vestibilità prima del checkout.</p>
-            <div class="model-guide-features">
-              <div class="guide-feature">
-                <span class="guide-dot"></span>
-                <span>Prospettiva 3D interattiva a 360°</span>
+        </div>
+      </section>
+
+      <!-- 3. Specifiche Tessuto & Dettagli (Riga orizzontale / griglia minimale) -->
+      <section id="specs" class="specs-bar-section">
+        <div class="section-wrapper">
+          <div class="specs-horizontal-grid">
+            
+            <div class="spec-inline-item">
+              <div class="spec-inline-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.9a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/>
+                  <path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/>
+                  <path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>
+                </svg>
               </div>
-              <div class="guide-feature">
-                <span class="guide-dot"></span>
-                <span>Cambio colore in tempo reale con i selettori</span>
+              <div class="spec-inline-text">
+                <h3 class="spec-inline-title">280 GSM Heavyweight Cotton</h3>
+                <p class="spec-inline-desc">Cotone pettinato ad alta densità con caduta rigida e finitura anti-deformazione.</p>
               </div>
-              <div class="guide-feature">
-                <span class="guide-dot"></span>
-                <span>Dettagli serigrafia gommata fronte e retro</span>
+            </div>
+
+            <div class="spec-inline-item">
+              <div class="spec-inline-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>
+                </svg>
+              </div>
+              <div class="spec-inline-text">
+                <h3 class="spec-inline-title">Boxy Oversize Fit</h3>
+                <p class="spec-inline-desc">Spalle cascanti ribassate e taglio squadrato ispirato alla scena rap internazionale.</p>
+              </div>
+            </div>
+
+            <div class="spec-inline-item">
+              <div class="spec-inline-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="m4.93 4.93 4.24 4.24"/>
+                  <path d="m14.83 9.17 4.24-4.24"/>
+                  <path d="m14.83 14.83 4.24 4.24"/>
+                  <path d="m9.17 14.83-4.24 4.24"/>
+                </svg>
+              </div>
+              <div class="spec-inline-text">
+                <h3 class="spec-inline-title">Screen Printed Graphics</h3>
+                <p class="spec-inline-desc">Serigrafia gommata plastisol ad alto rilievo tattile con tenuta prolungata.</p>
+              </div>
+            </div>
+
+            <div class="spec-inline-item">
+              <div class="spec-inline-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <path d="m9 12 2 2 4-4"/>
+                </svg>
+              </div>
+              <div class="spec-inline-text">
+                <h3 class="spec-inline-title">Made in Italy</h3>
+                <p class="spec-inline-desc">Tagliato, cucito e rifinito a mano con packaging e cartellini dedicati.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Streetwear Lookbook (Griglia a 3 scatti editoriali reali) -->
+      <section id="lookbook" class="lookbook-section">
+        <div class="section-wrapper">
+          <div class="section-header-minimal">
+            <span class="section-tag">EDITORIAL ARCHIVE</span>
+            <h2 class="section-heading">STREETWEAR LOOKBOOK</h2>
+          </div>
+
+          <div class="lookbook-grid">
+            <div class="lookbook-card">
+              <div class="lookbook-media">
+                <img src="./images/lookbook-1.jpg" alt="Tony Boy Boxy Oversize Silhouette - Scatto Urbano Fronte" class="lookbook-image" loading="lazy" />
+                <div class="lookbook-overlay">
+                  <a href="#buy-block" class="lookbook-tag-btn">
+                    <span>ACQUISTA IL LOOK</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+                  </a>
+                </div>
+              </div>
+              <div class="lookbook-info">
+                <span class="lookbook-shot-num">01 // FRONTE URBANO</span>
+                <h3 class="lookbook-shot-title">Boxy Oversize Clean Silhouette</h3>
+              </div>
+            </div>
+
+            <div class="lookbook-card">
+              <div class="lookbook-media">
+                <img src="./images/lookbook-2.jpg" alt="Heavy 280 GSM Cotton Texture - Macro Serigrafia Going Hard" class="lookbook-image" loading="lazy" />
+                <div class="lookbook-overlay">
+                  <a href="#buy-block" class="lookbook-tag-btn">
+                    <span>DETTAGLIO SERIGRAFIA</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+                  </a>
+                </div>
+              </div>
+              <div class="lookbook-info">
+                <span class="lookbook-shot-num">02 // DETTAGLIO & TEXTURE</span>
+                <h3 class="lookbook-shot-title">Luna Piena & Serigrafia Plastisol</h3>
+              </div>
+            </div>
+
+            <div class="lookbook-card">
+              <div class="lookbook-media">
+                <img src="./images/lookbook-3.jpg" alt="Tony Boy High-Density Screenprint - Vista di Spalle" class="lookbook-image" loading="lazy" />
+                <div class="lookbook-overlay">
+                  <a href="#buy-block" class="lookbook-tag-btn">
+                    <span>VISTA DI SPALLE</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+                  </a>
+                </div>
+              </div>
+              <div class="lookbook-info">
+                <span class="lookbook-shot-num">03 // RETRO MOOD</span>
+                <h3 class="lookbook-shot-title">Artwork Going Hard Notturno</h3>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 4. Lookbook Moodboard Section -->
-      <section id="lookbook" class="section lookbook-section">
-        <div class="section-container">
-          <div class="section-badge">EDITORIAL ARCHIVE</div>
-          <h2 class="section-title">STREETWEAR LOOKBOOK</h2>
-          <p class="section-subtitle">Visual and lifestyle moodboard del Drop 001</p>
+      <!-- 5. FAQ (Accordion Essenziale) -->
+      <section id="faq" class="faq-section">
+        <div class="section-wrapper faq-wrapper">
+          <div class="section-header-minimal">
+            <span class="section-tag">ASSISTENZA CLIENTI</span>
+            <h2 class="section-heading">DOMANDE FREQUENTI</h2>
+          </div>
 
-          <div class="lookbook-gallery">
-            <div class="lookbook-item item-large">
-              <img src="./images/lookbook-1.jpg" alt="Tony Boy Oversize Boxy Fit" class="lookbook-img" />
-              <div class="lookbook-card-inner">
-                <div class="lookbook-badge">FIT OVERSIZE</div>
-                <div class="lookbook-caption">
-                  <h3>BOXY STREET SILHOUETTE</h3>
-                  <p>Spalla cascante e lunghezza tagliata al millimetro per stratificare con felpe e giacche bomber.</p>
-                </div>
+          <div class="faq-list">
+            <div class="faq-row active">
+              <button type="button" class="faq-trigger" aria-expanded="true">
+                <span class="faq-title">Qual è la vestibilità e come scegliere la taglia?</span>
+                <span class="faq-toggle-icon" aria-hidden="true">−</span>
+              </button>
+              <div class="faq-content">
+                <p>La t-shirt presenta un taglio <strong>boxy oversize</strong> autentico con spalle ribassate e busto squadrato. Ti suggeriamo di ordinare la tua taglia standard per il caratteristico fit streetwear rilassato. Se preferisci una vestibilità più asciutta o aderente al corpo, opta per una taglia in meno.</p>
               </div>
             </div>
-            <div class="lookbook-item item-medium">
-              <img src="./images/lookbook-2.jpg" alt="Heavy 280 GSM Cotton Texture" class="lookbook-img" />
-              <div class="lookbook-card-inner">
-                <div class="lookbook-badge">TEXTILE</div>
-                <div class="lookbook-caption">
-                  <h3>HEAVY 280 GSM</h3>
-                  <p>Caduta pesante e tessuto compatto a costine.</p>
-                </div>
+
+            <div class="faq-row">
+              <button type="button" class="faq-trigger" aria-expanded="false">
+                <span class="faq-title">Quali sono i tempi e i costi di spedizione?</span>
+                <span class="faq-toggle-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="faq-content">
+                <p>Tutti gli ordini vengono preparati e spediti entro 24 ore lavorative. La consegna avviene in tutta Italia tramite corriere espresso tracciato (GLS / DHL) in <strong>24/48 ore</strong>. Riceverai via SMS ed e-mail il codice di tracciamento non appena il pacco lascia il magazzino.</p>
               </div>
             </div>
-            <div class="lookbook-item item-small">
-              <img src="./images/lookbook-3.jpg" alt="Tony Boy Graphic Print" class="lookbook-img" />
-              <div class="lookbook-card-inner">
-                <div class="lookbook-badge">PRINT DETAILS</div>
-                <div class="lookbook-caption">
-                  <h3>TONY BOY GRAPHICS</h3>
-                  <p>Serigrafia gommata a rilievo sul retro.</p>
-                </div>
+
+            <div class="faq-row">
+              <button type="button" class="faq-trigger" aria-expanded="false">
+                <span class="faq-title">Posso richiedere un cambio taglia o un reso?</span>
+                <span class="faq-toggle-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="faq-content">
+                <p>Certamente. Hai a disposizione <strong>14 giorni</strong> dalla consegna per effettuare un cambio taglia gratuito o richiedere il rimborso integrale, purché il capo non sia stato indossato e mantenga confezione ed etichette originali.</p>
+              </div>
+            </div>
+
+            <div class="faq-row">
+              <button type="button" class="faq-trigger" aria-expanded="false">
+                <span class="faq-title">Come lavare il capo per preservare la serigrafia?</span>
+                <span class="faq-toggle-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="faq-content">
+                <p>Consigliamo di lavare sempre a capo rovesciato a <strong>massimo 30°C</strong> con centrifuga delicata. Evitare l'asciugatrice e stirare rigorosamente sul rovescio senza applicare calore diretto sugli inchiostri plastisol.</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 5. FAQ Section -->
-      <section id="faq" class="section faq-section">
-        <div class="section-container faq-container">
-          <div class="section-badge">ASSISTENZA CLIENTI</div>
-          <h2 class="section-title">DOMANDE FREQUENTI</h2>
-          <p class="section-subtitle">Tutto quello che c'è da sapere sul drop e sulle spedizioni.</p>
-
-          <div class="faq-accordion">
-            <div class="faq-item active">
-              <button class="faq-question">
-                <span>Come calza la maglietta?</span>
-                <span class="faq-icon">+</span>
-              </button>
-              <div class="faq-answer">
-                <p>La t-shirt ha un taglio <strong>boxy oversize</strong>. Ti consigliamo di prendere la tua taglia abituale per l'effetto oversize autentico streetwear. Se preferisci un fit più regolare e aderente, scegli una taglia in meno.</p>
-              </div>
-            </div>
-
-            <div class="faq-item">
-              <button class="faq-question">
-                <span>Quali sono i tempi e i costi di spedizione?</span>
-                <span class="faq-icon">+</span>
-              </button>
-              <div class="faq-answer">
-                <p>Gli ordini vengono elaborati in 24 ore lavorative. La spedizione espressa tracciata impiega <strong>24/48 ore</strong> in tutta Italia. Riceverai via SMS ed email il link di tracciamento del corriere (GLS / DHL).</p>
-              </div>
-            </div>
-
-            <div class="faq-item">
-              <button class="faq-question">
-                <span>Come prendersi cura della serigrafia?</span>
-                <span class="faq-icon">+</span>
-              </button>
-              <div class="faq-answer">
-                <p>Consigliamo di lavare il capo a rovescio a <strong>massimo 30°C</strong> con centrifuga delicata. Non candeggiare e stirare sempre al rovescio per preservare la lucentezza della stampa serigrafica nel tempo.</p>
-              </div>
-            </div>
-
-            <div class="faq-item">
-              <button class="faq-question">
-                <span>Posso effettuare un cambio o un reso?</span>
-                <span class="faq-icon">+</span>
-              </button>
-              <div class="faq-answer">
-                <p>Certamente. Hai a disposizione <strong>14 giorni</strong> dalla ricezione dell'ordine per richiedere un cambio taglia o il rimborso completo, purché il capo sia integro con la confezione e i cartellini originali.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 6. Newsletter / VIP Drop Section -->
+      <!-- 6. Footer & Newsletter (Snella e minimale) -->
       <section class="newsletter-section">
-        <div class="newsletter-card">
-          <div class="edition-flag">VIP LIST // DROP ACCESS</div>
-          <h2 class="newsletter-title">NON PERDERE IL PROSSIMO DROP</h2>
-          <p class="newsletter-desc">Iscriviti per ricevere l'accesso prioritario 15 minuti prima del rilascio pubblico dei nuovi capi Tony Boy Archive.</p>
-          
-          <form id="newsletter-form" class="newsletter-form">
-            <input type="email" id="newsletter-email" placeholder="Inserisci la tua migliore email..." required />
-            <button type="submit" class="btn btn-primary">ACCESSO VIP</button>
-          </form>
-          <div id="newsletter-success" class="newsletter-success">✓ Registrato con successo! Ti invieremo il codice segreto prima del drop.</div>
+        <div class="section-wrapper newsletter-wrapper">
+          <div class="newsletter-box">
+            <span class="newsletter-sub">ACCESSO ESCLUSIVO</span>
+            <h2 class="newsletter-title">ACCEDI AI PROSSIMI DROP</h2>
+            <p class="newsletter-desc">Ricevi in anteprima l'accesso prioritario 15 minuti prima del lancio pubblico dei nuovi capi Tony Boy Archive.</p>
+            
+            <form id="newsletter-form" class="newsletter-inline-form">
+              <div class="input-group">
+                <input type="email" id="newsletter-email" placeholder="Inserisci il tuo indirizzo email..." required />
+                <button type="submit" class="newsletter-submit-btn" aria-label="Invia iscrizione">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </button>
+              </div>
+            </form>
+            <div id="newsletter-feedback" class="newsletter-feedback">✓ Iscrizione confermata. Ti avviseremo prima del prossimo rilascio.</div>
+          </div>
         </div>
       </section>
     </main>
 
-    <!-- Footer -->
+    <!-- Footer Legale & Social -->
     <footer class="site-footer">
-      <div class="footer-inner">
-        <div class="footer-col brand-col">
-          <div class="brand-logo">
-            <span class="logo-text">TONY BOY</span>
-            <span class="logo-sub">ARCHIVE // DROP 001</span>
+      <div class="footer-wrapper">
+        <div class="footer-top-row">
+          <div class="footer-brand">
+            <span class="footer-logo">TONY BOY</span>
+            <p class="footer-tagline">Official Streetwear Merchandise Drop • Going Hard 2 Edition</p>
           </div>
-          <p class="footer-bio">Official merchandise shop. Prodotti esclusivi realizzati in tiratura limitata con materiali di alta manifattura.</p>
-          <div class="social-links">
-            <a href="https://open.spotify.com" target="_blank" rel="noopener" class="social-link" title="Spotify">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424a.627.627 0 0 1-.861.208c-2.357-1.44-5.323-1.766-8.818-.968a.625.625 0 1 1-.278-1.219c3.824-.873 7.098-.504 9.75 1.118a.628.628 0 0 1 .207.861zm1.225-2.723a.784.784 0 0 1-1.078.261c-2.697-1.658-6.809-2.138-9.998-1.17a.785.785 0 1 1-.453-1.503c3.642-1.106 8.188-.574 11.268 1.334a.784.784 0 0 1 .261 1.078zm.105-2.836C14.693 8.94 9.387 8.764 6.3 9.7a.94.94 0 1 1-.548-1.8c3.551-1.078 9.429-.87 13.167 1.35a.94.94 0 0 1-.998 1.615z"/></svg>
+          
+          <div class="footer-social-links">
+            <a href="https://open.spotify.com" target="_blank" rel="noopener" class="social-icon" aria-label="Spotify">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424a.627.627 0 0 1-.861.208c-2.357-1.44-5.323-1.766-8.818-.968a.625.625 0 1 1-.278-1.219c3.824-.873 7.098-.504 9.75 1.118a.628.628 0 0 1 .207.861zm1.225-2.723a.784.784 0 0 1-1.078.261c-2.697-1.658-6.809-2.138-9.998-1.17a.785.785 0 1 1-.453-1.503c3.642-1.106 8.188-.574 11.268 1.334a.784.784 0 0 1 .261 1.078zm.105-2.836C14.693 8.94 9.387 8.764 6.3 9.7a.94.94 0 1 1-.548-1.8c3.551-1.078 9.429-.87 13.167 1.35a.94.94 0 0 1-.998 1.615z"/>
+              </svg>
             </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener" class="social-link" title="Instagram">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            <a href="https://instagram.com" target="_blank" rel="noopener" class="social-icon" aria-label="Instagram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
             </a>
-            <a href="https://youtube.com" target="_blank" rel="noopener" class="social-link" title="YouTube">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><polygon points="10 15 15 12 10 9"/></svg>
+            <a href="https://youtube.com" target="_blank" rel="noopener" class="social-icon" aria-label="YouTube">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/>
+                <polygon points="10 15 15 12 10 9"/>
+              </svg>
             </a>
           </div>
         </div>
 
-        <div class="footer-col">
-          <h4 class="footer-heading">Navigazione</h4>
-          <ul class="footer-list">
-            <li><a href="#hero">T-Shirt 3D</a></li>
-            <li><a href="#details">Specifiche Tessuto</a></li>
-            <li><a href="#buy">Guida all'acquisto</a></li>
-            <li><a href="#lookbook">Lookbook Galleria</a></li>
-            <li><a href="#faq">FAQ e Resi</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h4 class="footer-heading">Sicurezza & Pagamenti</h4>
-          <div class="payment-badges">
-            <span class="pay-pill">Apple Pay</span>
-            <span class="pay-pill">Google Pay</span>
-            <span class="pay-pill">Klarna 3x</span>
-            <span class="pay-pill">Visa / Mastercard</span>
-            <span class="pay-pill">PayPal</span>
+        <div class="footer-bottom-row">
+          <p class="copyright-text">© 2026 TONY BOY. Tutti i diritti riservati.</p>
+          <div class="legal-links">
+            <a href="#">Privacy Policy</a>
+            <span>•</span>
+            <a href="#">Termini del Servizio</a>
+            <span>•</span>
+            <a href="#">Spedizioni & Resi</a>
           </div>
-          <p class="footer-secure-note">Transazioni protette e crittografate SSL 256-bit.</p>
-        </div>
-      </div>
-
-      <div class="footer-bottom">
-        <p>© 2026 TONY BOY OFFICIAL STORE. Tutti i diritti riservati.</p>
-        <div class="footer-legal">
-          <a href="#">Privacy Policy</a>
-          <span>•</span>
-          <a href="#">Termini del Servizio</a>
-          <span>•</span>
-          <a href="#">Spedizioni</a>
         </div>
       </div>
     </footer>
 
-    <!-- Modale Guida alle Taglie (Size Guide) -->
+    <!-- Modale Guida alle Taglie Minimale -->
     <div id="size-modal" class="modal-overlay" aria-hidden="true">
       <div class="modal-card">
         <div class="modal-header">
           <div>
-            <h3 class="modal-title">GUIDA ALLE TAGLIE — BOXY TEE</h3>
-            <p class="modal-sub">Misure in centimetri (cm) prese a capo steso in piano.</p>
+            <h3 class="modal-title">GUIDA ALLE TAGLIE</h3>
+            <p class="modal-sub">Misure in centimetri (cm) rilevate a capo steso in piano.</p>
           </div>
-          <button id="close-modal" class="modal-close-btn" aria-label="Chiudi finestra">✕</button>
+          <button type="button" id="close-modal" class="modal-close-btn" aria-label="Chiudi guida taglie">✕</button>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-container">
           <table class="size-table">
             <thead>
               <tr>
                 <th>Taglia</th>
-                <th>Larghezza Petto (A)</th>
-                <th>Lunghezza Totale (B)</th>
-                <th>Larghezza Spalle (C)</th>
-                <th>Fit Consigliato</th>
+                <th>Petto (A)</th>
+                <th>Lunghezza (B)</th>
+                <th>Spalle (C)</th>
+                <th>Altezza consigliata</th>
               </tr>
             </thead>
             <tbody>
@@ -615,51 +507,43 @@
                 <td>58 cm</td>
                 <td>71 cm</td>
                 <td>54 cm</td>
-                <td>165 - 175 cm (Oversize)</td>
+                <td>165 - 175 cm</td>
               </tr>
               <tr class="highlight-row">
                 <td><strong>M</strong></td>
                 <td>61 cm</td>
                 <td>73 cm</td>
                 <td>56 cm</td>
-                <td>175 - 182 cm (Oversize)</td>
+                <td>175 - 182 cm</td>
               </tr>
               <tr>
                 <td><strong>L</strong></td>
                 <td>64 cm</td>
                 <td>75 cm</td>
                 <td>58 cm</td>
-                <td>182 - 188 cm (Oversize)</td>
+                <td>182 - 188 cm</td>
               </tr>
               <tr>
                 <td><strong>XL</strong></td>
                 <td>67 cm</td>
                 <td>77 cm</td>
                 <td>60 cm</td>
-                <td>188 - 195 cm (Oversize)</td>
-              </tr>
-              <tr>
-                <td><strong>XXL</strong></td>
-                <td>70 cm</td>
-                <td>79 cm</td>
-                <td>62 cm</td>
-                <td>Oltre 195 cm / Ultra Baggy</td>
+                <td>188 - 195 cm</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <div class="modal-tip">
-          <span class="tip-icon">💡</span>
-          <p><strong>Consiglio di stile:</strong> Il capo è già tagliato oversize. Se cerchi il tipico fit streetwear boxy con spalla cascante, seleziona la tua taglia standard.</p>
+          <p><strong>Nota sul fit:</strong> Il capo è già tagliato oversize boxy. Ti consigliamo di acquistare la tua taglia consueta per mantenere il fit inteso.</p>
         </div>
       </div>
     </div>
 
     <!-- Notification Toast -->
     <div id="toast" class="toast" role="alert" aria-live="assertive">
-      <div class="toast-icon">✓</div>
-      <div class="toast-message" id="toast-message">Articolo aggiunto al carrello!</div>
+      <div class="toast-indicator">✓</div>
+      <div class="toast-message" id="toast-message">Articolo aggiunto al carrello</div>
     </div>
 
     <script type="module" src="./src/main.js"></script>
