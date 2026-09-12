@@ -36,7 +36,7 @@
         </a>
 
         <div class="header-right">
-          <a href="#buy-block" class="cart-trigger" aria-label="Visualizza carrello">
+          <button type="button" class="cart-trigger" id="open-cart-btn" aria-label="Visualizza carrello">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
               <path d="M3 6h18"/>
@@ -44,7 +44,7 @@
             </svg>
             <span class="cart-label">CARRELLO</span>
             <span id="cart-counter" class="cart-count">0</span>
-          </a>
+          </button>
         </div>
       </div>
     </header>
@@ -80,20 +80,11 @@
                 </div>
 
                 <!-- Badge Prospettiva Corrente -->
-                <div class="packshot-badge-tag" id="packshot-badge">BACK // GOING HARD SERIGRAFIA</div>
+                
               </div>
 
-              <!-- Barra dei Menu Orizzontale Raggruppata e Centrata (VIEW 3D, FRONT, BACK, ZOOM) -->
+              <!-- Barra dei Menu Orizzontale Raggruppata e Centrata (FRONT, BACK, ZOOM) -->
               <div class="packshot-menu-bar">
-                <button type="button" class="tech-nav-btn" data-mode="view3d" id="btn-mode-3d" aria-label="Visualizzazione 3D interattiva">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-                    <line x1="12" y1="22.08" x2="12" y2="12"/>
-                  </svg>
-                  <span>VIEW 3D</span>
-                </button>
-
                 <button type="button" class="tech-nav-btn" data-mode="front" id="btn-mode-front" aria-label="Visualizza fronte">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>
@@ -482,8 +473,8 @@
     </footer>
 
     <!-- Modale Guida alle Taglie Minimale -->
-    <div id="size-modal" class="modal-overlay" aria-hidden="true">
-      <div class="modal-card">
+    <div id="size-modal" class="modal-overlay" data-lenis-prevent aria-hidden="true">
+      <div class="modal-card" data-lenis-prevent>
         <div class="modal-header">
           <div>
             <h3 class="modal-title">GUIDA ALLE TAGLIE</h3>
@@ -540,6 +531,81 @@
           <p><strong>Nota sul fit:</strong> Il capo è già tagliato oversize boxy. Ti consigliamo di acquistare la tua taglia consueta per mantenere il fit inteso.</p>
         </div>
       </div>
+    </div>
+
+    <!-- 6. Cart Drawer (Slide-Over Riquadro Carrello Streetwear) -->
+    <div id="cart-drawer-overlay" class="cart-drawer-overlay" aria-hidden="true">
+      <div class="cart-drawer-backdrop" id="cart-backdrop"></div>
+      
+      <aside class="cart-drawer" id="cart-drawer" data-lenis-prevent role="dialog" aria-modal="true" aria-labelledby="cart-title">
+        
+        <!-- Intestazione Carrello -->
+        <div class="cart-drawer-header">
+          <div class="cart-header-title-group">
+            <h2 id="cart-title" class="cart-drawer-title">CARRELLO</h2>
+            <span id="cart-drawer-count" class="cart-drawer-badge">0</span>
+          </div>
+          <button type="button" id="close-cart-btn" class="cart-close-btn" aria-label="Chiudi carrello">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Barra Avanzamento Spedizione Gratuita -->
+        <div class="cart-shipping-bar" id="cart-shipping-bar">
+          <div class="shipping-bar-text" id="shipping-bar-text">
+            <span>Aggiungi articoli per sbloccare la spedizione gratuita</span>
+          </div>
+          <div class="shipping-bar-progress">
+            <div class="shipping-bar-fill" id="shipping-bar-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Lista Articoli Carrello -->
+        <div class="cart-drawer-body" id="cart-items-container" data-lenis-prevent>
+          <!-- Popolato dinamicamente da main.js -->
+        </div>
+
+        <!-- Footer Carrello con Riepilogo & Checkout Shopify -->
+        <div class="cart-drawer-footer" id="cart-footer">
+          <div class="cart-subtotal-row">
+            <span class="subtotal-label">Subtotale</span>
+            <span class="subtotal-value" id="cart-subtotal">€ 0,00</span>
+          </div>
+          <p class="cart-tax-notice">IVA inclusa. Spedizione calcolata al checkout Shopify.</p>
+          
+          <a 
+            href="https://tonyboy.myshopify.com/cart" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            id="checkout-btn" 
+            class="btn-checkout-shopify"
+          >
+            <span>PROCEDI ALL'ACQUISTO</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+
+          <div class="cart-payment-badges">
+            <span class="secure-checkout-label">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              Checkout sicuro crittografato SSL
+            </span>
+            <div class="payment-chips-row">
+              <span class="pay-chip">Shopify</span>
+              <span class="pay-chip">Apple Pay</span>
+              <span class="pay-chip">Klarna</span>
+              <span class="pay-chip">Carte</span>
+            </div>
+          </div>
+        </div>
+
+      </aside>
     </div>
 
     <!-- Notification Toast -->

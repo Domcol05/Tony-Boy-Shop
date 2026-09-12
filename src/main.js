@@ -353,12 +353,32 @@ if (qtyMinus && qtyPlus && qtyValue) {
   });
 }
 
-// Add To Cart & Toast Notification
-const buyBtn = document.getElementById('buy-btn');
+/* ==========================================================================
+   4. SHOPPING CART DRAWER & SHOPIFY CHECKOUT INTEGRATION
+   ========================================================================== */
+// URL base dedicato Shopify per il checkout
+// (Sostituisci questo link con il link diretto Shopify o permalink del tuo store)
+const SHOPIFY_CHECKOUT_URL = 'https://tonyboy.myshopify.com/cart';
+const FREE_SHIPPING_THRESHOLD = 75.0;
+const ITEM_PRICE = 45.0;
+
+// Stato del Carrello
+let cartItems = [];
+
+const openCartBtn = document.getElementById('open-cart-btn');
+const closeCartBtn = document.getElementById('close-cart-btn');
+const cartOverlay = document.getElementById('cart-drawer-overlay');
+const cartBackdrop = document.getElementById('cart-backdrop');
+const cartItemsContainer = document.getElementById('cart-items-container');
 const cartCounter = document.getElementById('cart-counter');
+const cartDrawerCount = document.getElementById('cart-drawer-count');
+const cartSubtotalEl = document.getElementById('cart-subtotal');
+const checkoutBtn = document.getElementById('checkout-btn');
+const shippingBarText = document.getElementById('shipping-bar-text');
+const shippingBarFill = document.getElementById('shipping-bar-fill');
+const buyBtn = document.getElementById('buy-btn');
 const toast = document.getElementById('toast');
 const toastMessage = document.getElementById('toast-message');
-let totalCartItems = 0;
 
 function triggerToast(text) {
   if (toast && toastMessage) {
@@ -370,19 +390,237 @@ function triggerToast(text) {
   }
 }
 
+function openCartDrawer() {
+  if (cartOverlay) {
+    cartOverlay.classList.add('open');
+    cartOverlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    lenis.stop();
+    renderCart();
+  }
+}
+
+function closeCartDrawer() {
+  if (cartOverlay) {
+    cartOverlay.classList.remove('open');
+    cartOverlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    lenis.start();
+  }
+}
+
+function getTotalItemsCount() {
+  return cartItems.reduce((sum, item) => sum + item.quantity, 0);
+}
+
+function getSubtotal() {
+  return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+}
+
+function updateCartBadges() {
+  const totalCount = getTotalItemsCount();
+  if (cartCounter) {
+    cartCounter.textContent = totalCount;
+    gsap.fromTo(
+      cartCounter,
+      { scale: 1.5, backgroundColor: '#ffffff', color: '#08080a' },
+      { scale: 1, backgroundColor: '#ffffff', color: '#08080a', duration: 0.35, ease: 'back.out(2)' }
+    );
+  }
+  if (cartDrawerCount) {
+    cartDrawerCount.textContent = totalCount;
+  }
+}
+
+function updateShippingProgress(subtotal) {
+  if (!shippingBarText || !shippingBarFill) return;
+
+  if (subtotal === 0) {
+    shippingBarText.innerHTML = `<span>Aggiungi articoli per sbloccare la <strong>spedizione gratuita</strong></span>`;
+    shippingBarFill.style.width = '0%';
+  } else if (subtotal >= FREE_SHIPPING_THRESHOLD) {
+    shippingBarText.innerHTML = `<span><strong style="color: var(--accent-emerald);">🎉 Spedizione gratuita sbloccata!</strong></span>`;
+    shippingBarFill.style.width = '100%';
+  } else {
+    const diff = (FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2).replace('.', ',');
+    const percent = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
+    shippingBarText.innerHTML = `<span>Mancano <strong>€ ${diff}</strong> alla spedizione gratuita</span>`;
+    shippingBarFill.style.width = `${percent}%`;
+  }
+}
+
+function renderCart() {
+  if (!cartItemsContainer) return;
+
+  const totalCount = getTotalItemsCount();
+  const subtotal = getSubtotal();
+
+  updateCartBadges();
+  updateShippingProgress(subtotal);
+
+  if (cartSubtotalEl) {
+    cartSubtotalEl.textContent = `€ ${subtotal.toFixed(2).replace('.', ',')}`;
+  }
+
+  // Aggiorna stato e destinazione del pulsante checkout Shopify
+  if (checkoutBtn) {
+    if (cartItems.length === 0) {
+      checkoutBtn.classList.add('disabled');
+      checkoutBtn.removeAttribute('href');
+      checkoutBtn.style.pointerEvents = 'none';
+      checkoutBtn.style.opacity = '0.4';
+    } else {
+      checkoutBtn.classList.remove('disabled');
+      checkoutBtn.setAttribute('href', SHOPIFY_CHECKOUT_URL);
+      checkoutBtn.style.pointerEvents = 'auto';
+      checkoutBtn.style.opacity = '1';
+    }
+  }
+
+  if (cartItems.length === 0) {
+    cartItemsContainer.innerHTML = `
+      <div class="cart-empty-state">
+        <div class="cart-empty-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+            <path d="M3 6h18"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+        </div>
+        <h3 class="cart-empty-title">IL TUO CARRELLO È VUOTO</h3>
+        <p class="cart-empty-desc">Scopri l'esclusivo drop Going Hard 2 Box Tee e seleziona la tua taglia.</p>
+        <button type="button" class="btn-empty-shop" id="btn-close-and-shop">ESPLORA IL DROP</button>
+      </div>
+    `;
+
+    const btnShop = document.getElementById('btn-close-and-shop');
+    if (btnShop) {
+      btnShop.addEventListener('click', () => {
+        closeCartDrawer();
+        const hero = document.getElementById('hero');
+        if (hero) hero.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+    return;
+  }
+
+  // Render degli articoli
+  cartItemsContainer.innerHTML = cartItems
+    .map(
+      (item) => `
+      <div class="cart-item-card" data-id="${item.id}">
+        <div class="cart-item-thumb">
+          <img src="${item.image}" alt="${item.title}" />
+        </div>
+        <div class="cart-item-details">
+          <div class="cart-item-head">
+            <h4 class="cart-item-title">${item.title}</h4>
+            <button type="button" class="cart-item-remove-btn" data-remove="${item.id}" aria-label="Rimuovi ${item.title}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6 6 18M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+          <div class="cart-item-meta">
+            <span>Colore: <strong>${item.color}</strong></span>
+            <span class="cart-item-tag">Taglia: ${item.size}</span>
+          </div>
+          <div class="cart-item-bottom">
+            <div class="cart-qty-picker">
+              <button type="button" class="cart-qty-btn btn-cart-dec" data-id="${item.id}" aria-label="Riduci">−</button>
+              <span class="cart-qty-num">${item.quantity}</span>
+              <button type="button" class="cart-qty-btn btn-cart-inc" data-id="${item.id}" aria-label="Aumenta">+</button>
+            </div>
+            <span class="cart-item-price">€ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</span>
+          </div>
+        </div>
+      </div>
+    `
+    )
+    .join('');
+
+  // Event listeners per incrementare, decrementare o rimuovere articoli
+  cartItemsContainer.querySelectorAll('.btn-cart-inc').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-id');
+      const item = cartItems.find((i) => i.id === id);
+      if (item && item.quantity < 10) {
+        item.quantity++;
+        renderCart();
+      }
+    });
+  });
+
+  cartItemsContainer.querySelectorAll('.btn-cart-dec').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-id');
+      const itemIndex = cartItems.findIndex((i) => i.id === id);
+      if (itemIndex > -1) {
+        if (cartItems[itemIndex].quantity > 1) {
+          cartItems[itemIndex].quantity--;
+        } else {
+          cartItems.splice(itemIndex, 1);
+        }
+        renderCart();
+      }
+    });
+  });
+
+  cartItemsContainer.querySelectorAll('.cart-item-remove-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-remove');
+      cartItems = cartItems.filter((i) => i.id !== id);
+      renderCart();
+    });
+  });
+}
+
+function addToCart(size, qty) {
+  const itemId = `tee-${size}`;
+  const existingItem = cartItems.find((item) => item.id === itemId);
+
+  if (existingItem) {
+    existingItem.quantity += qty;
+  } else {
+    cartItems.push({
+      id: itemId,
+      title: 'TONY BOY – GOING HARD 2 BOX TEE',
+      color: 'Pitch Black',
+      size: size,
+      price: ITEM_PRICE,
+      quantity: qty,
+      image: './images/packshot-back.png',
+    });
+  }
+
+  updateCartBadges();
+  triggerToast(`Aggiunto al carrello: Going Hard 2 Box Tee (${size}) x${qty}`);
+  openCartDrawer();
+}
+
+// Event Listeners per Drawer Carrello
+if (openCartBtn) {
+  openCartBtn.addEventListener('click', openCartDrawer);
+}
+
+if (closeCartBtn) {
+  closeCartBtn.addEventListener('click', closeCartDrawer);
+}
+
+if (cartBackdrop) {
+  cartBackdrop.addEventListener('click', closeCartDrawer);
+}
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && cartOverlay && cartOverlay.classList.contains('open')) {
+    closeCartDrawer();
+  }
+});
+
+// Aggiungi al carrello da blocco acquisto
 if (buyBtn) {
   buyBtn.addEventListener('click', () => {
-    totalCartItems += quantity;
-    if (cartCounter) {
-      cartCounter.textContent = totalCartItems;
-      gsap.fromTo(
-        cartCounter,
-        { scale: 1.6, backgroundColor: '#ffffff', color: '#08080a' },
-        { scale: 1, backgroundColor: 'rgba(255,255,255,0.15)', color: '#ffffff', duration: 0.4, ease: 'back.out(2)' }
-      );
-    }
-
-    triggerToast(`Aggiunto al carrello: Going Hard 2 Box Tee Pitch Black (${selectedSize}) x${quantity}`);
+    addToCart(selectedSize, quantity);
   });
 }
 
@@ -395,6 +633,8 @@ function showModal() {
   if (sizeModal) {
     sizeModal.classList.add('open');
     sizeModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    lenis.stop();
   }
 }
 
@@ -402,6 +642,8 @@ function hideModal() {
   if (sizeModal) {
     sizeModal.classList.remove('open');
     sizeModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    lenis.start();
   }
 }
 
